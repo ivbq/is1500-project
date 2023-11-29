@@ -1,0 +1,10 @@
+Thank you for your draft abstract.
+According to your specification, we assume that you would like to do a advanced project.
+You aim to fulfill all the requirements of the advanced protocol project suggestion 
+provided on Canvas, and your basic Pong-game for the logic. In addition, you plan to
+have a highscore system accessible via the advance protocol. Please make sure that have
+atleast 3 highscore entries with 3-letter initials (that players enter if they reach the highscore)
+as well as a menu for selecting to show the highscore table or play the game.
+Also, please make sure to reach the basic Pong requirements (you can find them on the Canvas project homepage).
+Good luck with the project!
+Artur Podobas, 13 Oct at 10:50 
