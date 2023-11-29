@@ -196,7 +196,31 @@ void menu_update(uint8_t selected, uint8_t menu) {
             screen[55 + i*5 + j][0] |= pong[i][j];
         }
     }
-    if (menu == 1) {
+    if (menu == 1) { //main meny 
+        for (i = 0; i < 3; i++) {
+            screen[59 + i][1] |= text[1][i]; //PvBTEAYHRD
+        }
+        for (i = 0; i < 3; i++) {
+            screen[63 + i][1] |= text[1][i]; //PvBTEAYHRD
+        }
+        for (i = 0; i < 3; i++) {
+            screen[67 + i][1] |= text[1][i]; //PvBTEAYHRD
+        }
+
+        for (i = 0; i < 3; i++) {
+            screen[59 + i][2] |= text[2][i]; //PvBTEAYHRD
+        }
+        for (i = 0; i < 3; i++) {
+            screen[63 + i][2] |= number[0][i]; //PvBTEAYHRD
+        }
+        for (i = 0; i < 3; i++) {
+            screen[67 + i][2] |= text[3][i]; //PvBTEAYHRD
+        }
+
+
+
+
+    } else if (menu == 2) { //menu 2 play menu
         for (i = 0; i < 3; i++) {
             screen[59 + i][1] |= text[0][i]; //PvBTEAYHRD
         }
@@ -216,7 +240,12 @@ void menu_update(uint8_t selected, uint8_t menu) {
         for (i = 0; i < 3; i++) {
             screen[67 + i][2] |= text[3][i]; //PvBTEAYHRD
         }
-    } else { //menu 2 bot diff
+
+
+
+
+
+    } else if (menu == 3) { //menu 3 bot diff menu
         for (i = 0; i < 3; i++) {
             screen[58 + i][1] |= text[0][i]; //PvBTEAYHRD
         }
