@@ -134,7 +134,8 @@ int main(void) {
     init_bot();
     int delay;
     uint8_t pvp = 0;
-    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select
+    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 score
+    uint8_t btnsFlag = 0;
     
     uint8_t selected = 0; //selected button i meny
 
@@ -165,25 +166,34 @@ int main(void) {
                 }
             }
             if ((btns & 0b10) == 0b10) { //if BT2
-                if (menu) {
+                if (menu) { //menyknapp
                     if (menu == 1) {
+                        if (selected == 0) { //play
+                            menu = 2;
+                        } else { //score
+                            menu = 4;
+                        }
+                    } else if (menu == 2){ //menu 2
                         if (selected == 0) { //pvp
                             pvp = 1;
                             menu = 0;
-                        } else { //välj bot diff
-                            menu = 2;
+                        } else { //bot
+                            menu = 3;
                         }
-                    } else { //menu 2
-                        if (selected == 0) { //easy
+                    } else if (menu == 3){ //menu 3
+                        if (selected == 0) { //easy bot
                             bot.diff = 0;
-                        } else { //hard
+                        } else { //hard bor
                             bot.diff = 1;
                         }
                         pvp = 0;
                         menu = 0;
+                    } else { //menu 4 score
+                        menu = 1;
+                        selected = 0;
                     }
 
-                } else {
+                } else { //movement knapp
                     if (pvp) {
                         right.y++;
                         if (right.y > 31-playerHeight) {
@@ -192,6 +202,8 @@ int main(void) {
                     }
                 }
             }
+
+
             if ((btns & 0b1) == 0b1) { //if BT1
                 if (pvp && !menu) {
                     right.y--;
@@ -227,14 +239,16 @@ int main(void) {
         }
         display_update();
 
-        /*
+        if ((btns & 0b10) == 0b10 && menu) {
+            for(delay = 0; delay < 2000000; delay++) {}
+        }
+
+        
         if (menu) {
-            delay = 0;
+            delay = 10000;
         } else {
             delay = 200000;
         }
-        */
-        delay = 200000;
         for(delay; delay > 0; delay--) {}
     }
 }

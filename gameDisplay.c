@@ -38,16 +38,20 @@ uint8_t number[10][3] = {
     {0b11111000, 0b10101000, 0b11111000}, //8
     {0b10111000, 0b10101000, 0b11111000}}; //9
 
-uint8_t text[11][3] = { //PvBTEAYHRD
+uint8_t text[12][3] = { //PvBTEAYHRDLC
     {0b11111000, 0b00101000, 0b00010000}, //P
     {0b01100000, 0b10000000, 0b01100000}, //v
     {0b11111000, 0b10101000, 0b01010000}, //B
     {0b00001000, 0b11111000, 0b00001000}, //T
     {0b11111000, 0b10101000, 0b10001000}, //E
     {0b11110000, 0b00101000, 0b11110000}, //A
+    {0b00011000, 0b11100000, 0b00011000}, //Y
     {0b11111000, 0b00100000, 0b11111000}, //H
     {0b11111000, 0b00101000, 0b11010000}, //R
-    {0b11111000, 0b10001000, 0b01110000}}; //D
+    {0b11111000, 0b10001000, 0b01110000}, //D
+    {0b11111000, 0b10000000, 0b10000000}, //L
+    {0b01110000, 0b10001000, 0b10001000} //C
+    };
 
 uint8_t pong[4][4] = { //PONG
     {0b11111000, 0b00101000, 0b00101000, 0b00010000}, //P
@@ -196,25 +200,34 @@ void menu_update(uint8_t selected, uint8_t menu) {
             screen[55 + i*5 + j][0] |= pong[i][j];
         }
     }
-    if (menu == 1) { //main meny 
+    if (menu == 1) { //menu 1 main 
         for (i = 0; i < 3; i++) {
-            screen[59 + i][1] |= text[1][i]; //PvBTEAYHRD
+            screen[57 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
         }
         for (i = 0; i < 3; i++) {
-            screen[63 + i][1] |= text[1][i]; //PvBTEAYHRD
+            screen[61 + i][1] |= text[10][i]; //PvBTEAYHRDLC //L
         }
         for (i = 0; i < 3; i++) {
-            screen[67 + i][1] |= text[1][i]; //PvBTEAYHRD
+            screen[65 + i][1] |= text[5][i]; //PvBTEAYHRDLC //A
+        }
+        for (i = 0; i < 3; i++) {
+            screen[69 + i][1] |= text[6][i]; //PvBTEAYHRDLC //Y
         }
 
         for (i = 0; i < 3; i++) {
-            screen[59 + i][2] |= text[2][i]; //PvBTEAYHRD
+            screen[55 + i][2] |= number[5][i]; //PvBTEAYHRDLC //S
         }
         for (i = 0; i < 3; i++) {
-            screen[63 + i][2] |= number[0][i]; //PvBTEAYHRD
+            screen[59 + i][2] |= text[11][i]; //PvBTEAYHRDLC //C
         }
         for (i = 0; i < 3; i++) {
-            screen[67 + i][2] |= text[3][i]; //PvBTEAYHRD
+            screen[63 + i][2] |= number[0][i]; //PvBTEAYHRDLC //O
+        }
+        for (i = 0; i < 3; i++) {
+            screen[67 + i][2] |= text[8][i]; //PvBTEAYHRDLC //R
+        }
+        for (i = 0; i < 3; i++) {
+            screen[71 + i][2] |= text[4][i]; //PvBTEAYHRDLC //E
         }
 
 
@@ -222,23 +235,23 @@ void menu_update(uint8_t selected, uint8_t menu) {
 
     } else if (menu == 2) { //menu 2 play menu
         for (i = 0; i < 3; i++) {
-            screen[59 + i][1] |= text[0][i]; //PvBTEAYHRD
+            screen[59 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
         }
         for (i = 0; i < 3; i++) {
-            screen[63 + i][1] |= text[1][i]; //PvBTEAYHRD
+            screen[63 + i][1] |= text[1][i]; //PvBTEAYHRDLC //v
         }
         for (i = 0; i < 3; i++) {
-            screen[67 + i][1] |= text[0][i]; //PvBTEAYHRD
+            screen[67 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
         }
 
         for (i = 0; i < 3; i++) {
-            screen[59 + i][2] |= text[2][i]; //PvBTEAYHRD
+            screen[59 + i][2] |= text[2][i]; //PvBTEAYHRDLC //B
         }
         for (i = 0; i < 3; i++) {
-            screen[63 + i][2] |= number[0][i]; //PvBTEAYHRD
+            screen[63 + i][2] |= number[0][i]; //PvBTEAYHRDLC //O
         }
         for (i = 0; i < 3; i++) {
-            screen[67 + i][2] |= text[3][i]; //PvBTEAYHRD
+            screen[67 + i][2] |= text[3][i]; //PvBTEAYHRDLC //T
         }
 
 
@@ -247,44 +260,56 @@ void menu_update(uint8_t selected, uint8_t menu) {
 
     } else if (menu == 3) { //menu 3 bot diff menu
         for (i = 0; i < 3; i++) {
-            screen[58 + i][1] |= text[0][i]; //PvBTEAYHRD
+            screen[57 + i][1] |= text[4][i]; //PvBTEAYHRDLC //E
         }
         for (i = 0; i < 3; i++) {
-            screen[62 + i][1] |= text[1][i]; //PvBTEAYHRD
+            screen[61 + i][1] |= text[5][i]; //PvBTEAYHRDLC //A
         }
         for (i = 0; i < 3; i++) {
-            screen[66 + i][1] |= text[0][i]; //PvBTEAYHRD
+            screen[65 + i][1] |= number[5][i]; //PvBTEAYHRDLC //S
+        }
+        for (i = 0; i < 3; i++) {
+            screen[69 + i][1] |= text[6][i]; //PvBTEAYHRDLC //Y
         }
 
         for (i = 0; i < 3; i++) {
-            screen[58 + i][2] |= text[2][i]; //PvBTEAYHRD
+            screen[57 + i][2] |= text[7][i]; //PvBTEAYHRDLC //H
         }
         for (i = 0; i < 3; i++) {
-            screen[62 + i][2] |= number[0][i]; //PvBTEAYHRD
+            screen[61 + i][2] |= text[5][i]; //PvBTEAYHRDLC //A
         }
         for (i = 0; i < 3; i++) {
-            screen[66 + i][2] |= text[3][i]; //PvBTEAYHRD
+            screen[65 + i][2] |= text[8][i]; //PvBTEAYHRDLC //R
         }
+        for (i = 0; i < 3; i++) {
+            screen[69 + i][2] |= text[9][i]; //PvBTEAYHRDLC //D
+        }
+
+
+
+    } else { //menu 4 score
+
     }
-
-    if (selected == 0) {
-        for (i = 0; i < 28; i++) {
-            screen[50+i][1] |= 0b00000010;
-            screen[50+i][2] |= 0b00000010;
+    if (menu != 4) {
+        if (selected == 0) {
+            for (i = 0; i < 28; i++) {
+                screen[50+i][1] |= 0b00000010;
+                screen[50+i][2] |= 0b00000010;
+            }
+            screen[50][1] |= 0b11111110;
+            screen[50][2] |= 0b00000011;
+            screen[50+28][1] |= 0b11111110;
+            screen[50+28][2] |= 0b00000011;
+        } else {
+            for (i = 0; i < 28; i++) {
+                screen[50+i][2] |= 0b00000010;
+                screen[50+i][3] |= 0b00000010;
+            }
+            screen[50][2] |= 0b11111110;
+            screen[50][3] |= 0b00000011;
+            screen[50+28][2] |= 0b11111110;
+            screen[50+28][3] |= 0b00000011;
         }
-        screen[50][1] |= 0b11111110;
-        screen[50][2] |= 0b00000011;
-        screen[50+28][1] |= 0b11111110;
-        screen[50+28][2] |= 0b00000011;
-    } else {
-        for (i = 0; i < 28; i++) {
-            screen[50+i][2] |= 0b00000010;
-            screen[50+i][3] |= 0b00000010;
-        }
-        screen[50][2] |= 0b11111110;
-        screen[50][3] |= 0b00000011;
-        screen[50+28][2] |= 0b11111110;
-        screen[50+28][3] |= 0b00000011;
     }
 }
 
