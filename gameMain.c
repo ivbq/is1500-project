@@ -3,6 +3,14 @@
 #include "game.h"  /* Declatations for these labs */
 
 
+/*
+ * TODO:    Ball movement
+ *          ball collision y-led
+ *          highscore
+ * 
+ *          
+*/
+
 struct ball ball;
 void init_ball() {
     ball.x = 64;
@@ -31,7 +39,7 @@ void init_bot() {
 };
 
 
-void ball_collision() {
+void ball_collision() { //fixa studs på y ???
     if (ball.y < heightMargin+2 || ball.y > 31 - heightMargin -2) { //if tak/golv
         ball.vy *= -1;
     }
@@ -220,7 +228,7 @@ int main(void) {
         if (menu) {
             menu_update(selected, menu);
         } else {
-            //ball movement
+            //ball movement ???
             ball.y += ball.vy;
             ball.x += ball.vx;
             if (!pvp) { bot_movement(); } //om man spelar mot en bot
