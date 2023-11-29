@@ -5,10 +5,9 @@
 
 /*
  * TODO:    Ball movement
- *          ball collision y-led
+ *          ball collision (även y-led)
  *          highscore
- * 
- *          
+ *          vinn anouncement, meny eller separat sida?
 */
 
 struct ball ball;
@@ -142,8 +141,7 @@ int main(void) {
     init_bot();
     int delay;
     uint8_t pvp = 0;
-    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 score
-    uint8_t btnsFlag = 0;
+    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 score //5 vinnmeny???
     
     uint8_t selected = 0; //selected button i meny
 
