@@ -134,7 +134,7 @@ int main(void) {
     init_bot();
     int delay;
     uint8_t pvp = 0;
-    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är bot difficulty select
+    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select
     
     uint8_t selected = 0; //selected button i meny
 
