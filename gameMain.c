@@ -151,7 +151,7 @@ int main(void) {
         //buttons
         uint8_t btns = getbtns();
         if(btns) {
-            if ((btns & 0b1000) == 0b1000) { //if BT4
+            if ((btns & 0b100) == 0b100) { //if BT3
                 if (menu) {
                     selected = 1;
                 } else {
@@ -161,7 +161,7 @@ int main(void) {
                     }
                 }
             }
-            if ((btns & 0b100) == 0b100) { //if BT3
+            if ((btns & 0b1000) == 0b1000) { //if BT4
                 if (menu) {
                     selected = 0;
                 } else {
