@@ -2,6 +2,7 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "game.h"  /* Declatations for these labs */
 
+#define EEPROM_ADDR 0x50 // Address of the EEPROM
 
 /*
  * TODO:    Ball movement
@@ -134,6 +135,9 @@ int main(void) {
 	SPI2CONSET = 0x20;
 	/* SPI2CON bit ON = 1; */
 	SPI2CONSET = 0x8000;
+
+    // I2C device address of EEPROM chip
+    int address = 1010000;
 	
     display_init();
     init_ball();
