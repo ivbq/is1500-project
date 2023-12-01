@@ -60,6 +60,57 @@ void i2c_stop() {
 	i2c_idle();
 }
 
+#define EEPROM_ADDRESS 0b1010000 // Replace with the actual I2C address of your EEPROM
+
+/* Write one byte to the EEPROM at a specific memory address */
+void eeprom_write_byte(uint16_t memory_address, uint8_t data) {
+    // Send start condition
+    i2c_start();
+
+    // Send device address with write bit
+    i2c_send(EEPROM_ADDRESS | 0);
+
+    // Send high and low bytes of the memory address
+    i2c_send((uint8_t)(memory_address >> 8)); // MSB of memory address
+    i2c_send((uint8_t)(memory_address & 0xFF)); // LSB of memory address
+
+    // Send data byte
+    i2c_send(data);
+
+    // Send stop condition
+    i2c_stop();
+}
+
+/* Read one byte from the EEPROM at a specific memory address */
+uint8_t eeprom_read_byte(uint16_t memory_address) {
+    uint8_t data;
+
+    // Send start condition
+    i2c_start();
+
+    // Send device address with write bit
+    i2c_send(EEPROM_ADDRESS | 0);
+
+    // Send high and low bytes of the memory address
+    i2c_send((uint8_t)(memory_address >> 8)); // MSB of memory address
+    i2c_send((uint8_t)(memory_address & 0xFF)); // LSB of memory address
+
+    // Send repeated start condition
+    i2c_restart();
+
+    // Send device address with read bit
+    i2c_send(EEPROM_ADDRESS | 1);
+
+    // Receive data byte
+    data = i2c_recv();
+
+    // Send not-acknowledge and stop condition
+    i2c_nack();
+    i2c_stop();
+
+    return data;
+}
+
 // 	/* Send start condition and address of the temperature sensor with
 // 	write mode (lowest bit = 0) until the temperature sensor sends
 // 	acknowledge condition */
