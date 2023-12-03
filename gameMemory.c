@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdint.h>   /* Declarations of uint_32 and the like */
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 
@@ -109,6 +110,26 @@ uint8_t eeprom_read_byte(uint16_t memory_address) {
     i2c_stop();
 
     return data;
+}
+
+void test_eeprom() {
+    uint16_t test_address = 0x1234; // Replace with a valid address for your EEPROM
+    uint8_t test_data = 0xAB; // Test data to write and then read
+
+    // Write test data to EEPROM
+    eeprom_write_byte(test_address, test_data);
+
+    // Read data from EEPROM
+    uint8_t read_data = eeprom_read_byte(test_address);
+
+    // // Check if the written and read data are the same
+    // if (read_data == test_data) {
+    //     // If this prints, the EEPROM read/write functions are probably working
+    //     printf("EEPROM test passed!\n");
+    // } else {
+    //     // If this prints, there's a problem with the EEPROM or the read/write functions
+    //     printf("EEPROM test failed. Wrote: 0x%X, Read: 0x%X\n", test_data, read_data);
+    // }
 }
 
 // 	/* Send start condition and address of the temperature sensor with
