@@ -160,10 +160,14 @@ int main(void) {
     int delay;
     uint8_t pvp = 0;
     uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 score //5 vinnmeny???
-    
     uint8_t selected = 0; //selected button i meny
 
-    // test_eeprom();
+    // Only 3 highscores are visible at a time, though 10 are kept in memory
+    // Highscore format:
+    // 0-2 reserved for 3-letter name ABC
+    // 3 is a separator
+    // 4-8 lists total points scored
+    char highscores[8][8];
 
     while(1==1){
         //buttons
@@ -213,6 +217,7 @@ int main(void) {
                         pvp = 0;
                         menu = 0;
                     } else { //menu 4 score
+                    // Add logic to handle highscores
                         menu = 1;
                         selected = 0;
                     }
@@ -256,6 +261,12 @@ int main(void) {
                 left.score = 0;
                 right.score = 0;
                 menu = 1;
+                
+                // Read highscore
+                int highscore;
+                memcpy(highscore, highscores[0][0], 4);
+                highscore++;
+
                 clear_screen();
             } else {
                 update_score(left.score, right.score);
