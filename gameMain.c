@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>   /* Declarations of uint_32 and the like */
+#include <stdlib.h>
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "game.h"  /* Declatations for these labs */
 
@@ -167,7 +168,18 @@ int main(void) {
     // 0-2 reserved for 3-letter name ABC
     // 3 is a separator
     // 4-8 lists total points scored
-    char highscores[8][8];
+    typedef struct highscore {
+        char name[3];
+        int score;
+    } Highscore;
+
+    Highscore highscores[10];
+
+    int cmpfunc(const void *a, const void *b) {
+        const Highscore *highscoreA = (const Highscore *)a;
+        const Highscore *highscoreB = (const Highscore *)b;
+        return highscoreA->score - highscoreB->score;
+    }
 
     while(1==1){
         //buttons
@@ -258,15 +270,19 @@ int main(void) {
             update_ball(ball.x, ball.y);
             ball_collision(); //studsar/vinn
             if (right.score == 10 || left.score == 10) {
+                if (right.score == 10) {
+                    int i;
+                    for (i = 0; i < 10; i++) {
+                        if (highscores[i].name == "right") {
+                            highscores[i].score++;
+                            break;
+                        }
+                    }
+                    qsort(highscores, 10, sizeof(Highscore), cmpfunc);
+                }
                 left.score = 0;
                 right.score = 0;
                 menu = 1;
-                
-                // Read highscore
-                int highscore;
-                memcpy(highscore, highscores[0][0], 4);
-                highscore++;
-
                 clear_screen();
             } else {
                 update_score(left.score, right.score);
