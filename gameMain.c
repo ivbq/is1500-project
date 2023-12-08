@@ -61,12 +61,12 @@ int cmpfunc(const void *a, const void *b) {
 }
 
 void ball_collision() { //fixa studs på y ???
-    if (ball.y < heightMargin+2) { //if tak
-        ball.y = heightMargin+2;
+    if (ball.y <= heightMargin+1) { //if tak
+        ball.y = heightMargin+1;
         ball.vy *= -1;
     }
-    if(ball.y > 31 - heightMargin -2) { //if golv
-        ball.y = 31 - heightMargin -2;
+    if(ball.y >= 31 - heightMargin -1) { //if golv
+        ball.y = 31 - heightMargin -1;
         ball.vy *= -1;
     }
 
