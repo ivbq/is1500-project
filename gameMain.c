@@ -287,7 +287,7 @@ int main(void) {
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             ball_collision(); //studsar/vinn
             if (right.score == 10 || left.score == 10) {
-                char[3] winner = (right.score > left.score) ? "rrr" : "lll";
+                char[] winner = (right.score > left.score) ? "rrr" : "lll";
                 int i;
                 for (i = 0; i < 10; i++) {
                     if (highscores[i].name == winner) {
