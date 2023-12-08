@@ -33,10 +33,10 @@ uint8_t getsw(void);
 void enable_interrupt(void);
 
 struct ball {
-    uint8_t x;
-    uint8_t y;
-    uint8_t vx;
-    uint8_t vy;
+    float x;
+    float y;
+    float vx;
+    float vy;
 };
 
 struct paddle {

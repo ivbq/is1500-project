@@ -333,32 +333,22 @@ void menu_update(uint8_t selected, uint8_t menu) {
         }
     }
     if (menu == 1) { //menu 1 main 
+        for (i = 0; i < 8; i++) { //test
+            screen[20 + i][3] |= font[((int)'P')*8 + i];
+            screen[28 + i][3] |= font[((int)'O')*8 + i];
+            screen[36 + i][3] |= font[((int)'N')*8 + i];
+            screen[44 + i][3] |= font[((int)'G')*8 + i];
+        }
         for (i = 0; i < 3; i++) {
             screen[57 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
-        }
-        for (i = 0; i < 3; i++) {
             screen[61 + i][1] |= text[10][i]; //PvBTEAYHRDLC //L
-        }
-        for (i = 0; i < 3; i++) {
             screen[65 + i][1] |= text[5][i]; //PvBTEAYHRDLC //A
-        }
-        for (i = 0; i < 3; i++) {
             screen[69 + i][1] |= text[6][i]; //PvBTEAYHRDLC //Y
-        }
-
-        for (i = 0; i < 3; i++) {
+        
             screen[55 + i][2] |= number[5][i]; //PvBTEAYHRDLC //S
-        }
-        for (i = 0; i < 3; i++) {
             screen[59 + i][2] |= text[11][i]; //PvBTEAYHRDLC //C
-        }
-        for (i = 0; i < 3; i++) {
             screen[63 + i][2] |= number[0][i]; //PvBTEAYHRDLC //O
-        }
-        for (i = 0; i < 3; i++) {
             screen[67 + i][2] |= text[8][i]; //PvBTEAYHRDLC //R
-        }
-        for (i = 0; i < 3; i++) {
             screen[71 + i][2] |= text[4][i]; //PvBTEAYHRDLC //E
         }
 
@@ -368,52 +358,25 @@ void menu_update(uint8_t selected, uint8_t menu) {
     } else if (menu == 2) { //menu 2 play menu
         for (i = 0; i < 3; i++) {
             screen[59 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
-        }
-        for (i = 0; i < 3; i++) {
             screen[63 + i][1] |= text[1][i]; //PvBTEAYHRDLC //v
-        }
-        for (i = 0; i < 3; i++) {
             screen[67 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
-        }
-
-        for (i = 0; i < 3; i++) {
+        
             screen[59 + i][2] |= text[2][i]; //PvBTEAYHRDLC //B
-        }
-        for (i = 0; i < 3; i++) {
             screen[63 + i][2] |= number[0][i]; //PvBTEAYHRDLC //O
-        }
-        for (i = 0; i < 3; i++) {
             screen[67 + i][2] |= text[3][i]; //PvBTEAYHRDLC //T
         }
-
-
-
 
 
     } else if (menu == 3) { //menu 3 bot diff menu
         for (i = 0; i < 3; i++) {
             screen[57 + i][1] |= text[4][i]; //PvBTEAYHRDLC //E
-        }
-        for (i = 0; i < 3; i++) {
             screen[61 + i][1] |= text[5][i]; //PvBTEAYHRDLC //A
-        }
-        for (i = 0; i < 3; i++) {
             screen[65 + i][1] |= number[5][i]; //PvBTEAYHRDLC //S
-        }
-        for (i = 0; i < 3; i++) {
             screen[69 + i][1] |= text[6][i]; //PvBTEAYHRDLC //Y
-        }
 
-        for (i = 0; i < 3; i++) {
             screen[57 + i][2] |= text[7][i]; //PvBTEAYHRDLC //H
-        }
-        for (i = 0; i < 3; i++) {
             screen[61 + i][2] |= text[5][i]; //PvBTEAYHRDLC //A
-        }
-        for (i = 0; i < 3; i++) {
             screen[65 + i][2] |= text[8][i]; //PvBTEAYHRDLC //R
-        }
-        for (i = 0; i < 3; i++) {
             screen[69 + i][2] |= text[9][i]; //PvBTEAYHRDLC //D
         }
 
@@ -422,21 +385,21 @@ void menu_update(uint8_t selected, uint8_t menu) {
     } else { //menu 4 score
 
     }
-    if (menu != 4) {
-        if (selected == 0) {
-            for (i = 0; i < 28; i++) {
+    if (menu != 4) { //select
+        if (selected == 0) { //första alternativet
+            for (i = 0; i < 28; i++) { //rad
                 screen[50+i][1] |= 0b00000010;
                 screen[50+i][2] |= 0b00000010;
-            }
-            screen[50][1] |= 0b11111110;
+            }  //column
+            screen[50][1] |= 0b11111110; 
             screen[50][2] |= 0b00000011;
             screen[50+28][1] |= 0b11111110;
             screen[50+28][2] |= 0b00000011;
-        } else {
-            for (i = 0; i < 28; i++) {
+        } else { //andra alternativet
+            for (i = 0; i < 28; i++) { //rad
                 screen[50+i][2] |= 0b00000010;
                 screen[50+i][3] |= 0b00000010;
-            }
+            }  //column
             screen[50][2] |= 0b11111110;
             screen[50][3] |= 0b00000011;
             screen[50+28][2] |= 0b11111110;

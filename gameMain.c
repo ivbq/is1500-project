@@ -17,8 +17,8 @@ struct ball ball;
 void init_ball() {
     ball.x = 64;
     ball.y = 16;
-    ball.vx = 1;
-    ball.vy = 1;
+    ball.vx = 0.7;
+    ball.vy = 0.7;
 };
 
 struct paddle left;
@@ -42,26 +42,43 @@ void init_bot() {
 
 
 void ball_collision() { //fixa studs på y ???
-    if (ball.y < heightMargin+2 || ball.y > 31 - heightMargin -2) { //if tak/golv
+    if (ball.y < heightMargin+2) { //if tak
+        ball.y = heightMargin+2;
         ball.vy *= -1;
     }
-    if (ball.x == widthMargin+2) { //if vid vänstra spelare
+    if(ball.y > 31 - heightMargin -2) { //if golv
+        ball.y = 31 - heightMargin -2;
+        ball.vy *= -1;
+    }
+
+    /*if (ball.x < widthMargin+2 && ball.x >= widthMargin+1   &&   left.y-1 < ball.y && left.y + playerHeight +1 > ball.y) { //om bollen träffar sidan av left paddle
+        ball.x = widthMargin+2;
+    }*/
+
+
+    if (ball.x < widthMargin+2 && ball.x >= widthMargin) { //if vid vänstra spelare
         if (left.y-1 < ball.y && left.y + playerHeight +1 > ball.y) {
-            ball.vx *= -1;
+            ball.x = widthMargin+2;
+            ball.vx = cos(atan(left.y + (playerHeight/2)));
+            ball.vy = sin(atan(left.y + (playerHeight/2)));
         }
-    } else if (ball.x == 127 - widthMargin -2) { //if vid högra spelare
+    } else if (ball.x > 127 - widthMargin -2 && ball.x <= 127 - widthMargin) { //if vid högra spelare
         if (right.y-1 < ball.y && right.y + playerHeight +1 > ball.y) {
-            ball.vx *= -1;
+            ball.x = 127 - widthMargin -2;
+            ball.vx = cos(atan(-(left.y + (playerHeight/2))));
+            ball.vy = sin(atan(-(left.y + (playerHeight/2))));
         }
     }
 
     //någon förlorar
     if (ball.x <= 1) { //vänster ut
         ball.x = 64;
+        ball.y = 16;
         ball.vx *= -1;
         right.score ++;
     } else if (ball.x >= 126) { //höger ut
         ball.x = 64;
+        ball.y = 16;
         ball.vx *= -1;
         left.score++;
     }
@@ -267,7 +284,7 @@ int main(void) {
             if (!pvp) { bot_movement(); } //om man spelar mot en bot
             update_paddle(widthMargin,left.y);
             update_paddle(128-widthMargin,right.y);
-            update_ball(ball.x, ball.y);
+            update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             ball_collision(); //studsar/vinn
             if (right.score == 10 || left.score == 10) {
                 if (right.score == 10) {
