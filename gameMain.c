@@ -270,16 +270,15 @@ int main(void) {
             update_ball(ball.x, ball.y);
             ball_collision(); //studsar/vinn
             if (right.score == 10 || left.score == 10) {
-                if (right.score == 10) {
-                    int i;
-                    for (i = 0; i < 10; i++) {
-                        if (highscores[i].name == "right") {
-                            highscores[i].score++;
-                            break;
-                        }
+                char winner[3] = (right.score > left.score) ? "rrr" : "lll";
+                int i;
+                for (i = 0; i < 10; i++) {
+                    if (highscores[i].name == winner) {
+                        highscores[i].score++;
+                        break;
                     }
-                    qsort(highscores, 10, sizeof(Highscore), cmpfunc);
                 }
+                qsort(highscores, 10, sizeof(Highscore), cmpfunc);
                 left.score = 0;
                 right.score = 0;
                 menu = 1;
