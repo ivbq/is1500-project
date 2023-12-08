@@ -409,10 +409,11 @@ void menu_update(uint8_t selected, uint8_t menu) {
 }
 
 
-void update_ball(uint8_t x, uint8_t y) {
+void update_ball(uint8_t bx, uint8_t by) {
     uint8_t j;
     uint8_t i;
-    y --;
+    uint8_t y = by -1;
+    uint8_t x = bx;
     
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 3; j++) {

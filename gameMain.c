@@ -57,27 +57,29 @@ void ball_collision() { //fixa studs på y ???
     if (ball.x < widthMargin+2 && ball.x >= widthMargin) { //if vid vänstra spelare
         if (left.y-1 < ball.y && left.y + playerHeight +1 > ball.y) {
             ball.x = widthMargin+2;
-            ball.vx = cos(atan(left.y + (playerHeight/2)));
-            ball.vy = sin(atan(left.y + (playerHeight/2)));
+            ball.vx = cos(atan(ball.y - (left.y + (playerHeight/2))));
+            ball.vy = sin(atan(ball.y - (left.y + (playerHeight/2))));
         }
     } else if (ball.x > 127 - widthMargin -2 && ball.x <= 127 - widthMargin) { //if vid högra spelare
         if (right.y-1 < ball.y && right.y + playerHeight +1 > ball.y) {
             ball.x = 127 - widthMargin -2;
-            ball.vx = cos(atan(-(left.y + (playerHeight/2))));
-            ball.vy = sin(atan(-(left.y + (playerHeight/2))));
+            ball.vx = cos(atan((right.y + (playerHeight/2)) - ball.y));
+            ball.vy = sin(atan((right.y + (playerHeight/2)) - ball.y));
         }
     }
 
     //någon förlorar
-    if (ball.x <= 1) { //vänster ut
+    if (ball.x <= 2) { //vänster ut
         ball.x = 64;
         ball.y = 16;
-        ball.vx *= -1;
+        ball.vx = 1/(2);
+        ball.vy = 1/(2);
         right.score ++;
-    } else if (ball.x >= 126) { //höger ut
+    } else if (ball.x >= 125) { //höger ut
         ball.x = 64;
         ball.y = 16;
-        ball.vx *= -1;
+        ball.vx = -1/(2);
+        ball.vy = 1/(2);
         left.score++;
     }
 }
@@ -183,6 +185,7 @@ int main(void) {
     // 0-2 reserved for 3-letter name ABC
     // 3 is a separator
     // 4-8 lists total points scored
+    /*
     typedef struct highscore {
         char name[3];
         int score;
@@ -195,6 +198,7 @@ int main(void) {
         const Highscore *highscoreB = (const Highscore *)b;
         return highscoreA->score - highscoreB->score;
     }
+    */
 
     while(1==1){
         //buttons
@@ -285,6 +289,7 @@ int main(void) {
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             ball_collision(); //studsar/vinn
             if (right.score == 10 || left.score == 10) {
+                /*
                 char[3] winner = (right.score > left.score) ? "rrr" : "lll";
                 int i;
                 for (i = 0; i < 10; i++) {
@@ -294,6 +299,7 @@ int main(void) {
                     }
                 }
                 qsort(highscores, 10, sizeof(Highscore), cmpfunc);
+                */
                 left.score = 0;
                 right.score = 0;
                 menu = 1;
