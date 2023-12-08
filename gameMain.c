@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "game.h"  /* Declatations for these labs */
+#include <math.h>
 
 #define EEPROM_ADDR 0x50 // Address of the EEPROM
 
@@ -51,9 +52,6 @@ void ball_collision() { //fixa studs på y ???
         ball.vy *= -1;
     }
 
-    /*if (ball.x < widthMargin+2 && ball.x >= widthMargin+1   &&   left.y-1 < ball.y && left.y + playerHeight +1 > ball.y) { //om bollen träffar sidan av left paddle
-        ball.x = widthMargin+2;
-    }*/
 
 
     if (ball.x < widthMargin+2 && ball.x >= widthMargin) { //if vid vänstra spelare
