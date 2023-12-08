@@ -70,40 +70,54 @@ void ball_collision() { //fixa studs på y ???
         ball.vy *= -1;
     }
 
+    float magnitude = 1;
     if (ball.x < widthMargin+2 && ball.x >= widthMargin) { //if vid vänstra spelare
         if (left.y-1 < ball.y && left.y + playerHeight +1 > ball.y) {
             ball.x = widthMargin+2;
-            ball.vx = cos(atan((ball.y - (left.y + (playerHeight/2))) / (playerHeight/2)));
-            ball.vy = -sin(atan((ball.y - (left.y + (playerHeight/2))) / (playerHeight/2)));
+            ball.vx = 2;
+            ball.vy = ball.y - (left.y + (playerHeight/2));
+            magnitude = (ball.vx * ball.vx + ball.vy * ball.vy);
+            ball.vx *= ball.vx / magnitude;
+            ball.vy *= ball.vy / magnitude;
+            if (ball.y < (left.y + (playerHeight/2))) {
+                ball.vy *= -1;
+            }
         }
     } else if (ball.x > 127 - widthMargin -2 && ball.x <= 127 - widthMargin) { //if vid högra spelare
         if (right.y-1 < ball.y && right.y + playerHeight +1 > ball.y) {
             ball.x = 127 - widthMargin -2;
-            ball.vx = -cos(atan((ball.y - (right.y + (playerHeight/2))) / (playerHeight/2)));
-            ball.vy = sin(atan((ball.y - (right.y + (playerHeight/2))) / (playerHeight/2)));
+            ball.vx = 2;
+            ball.vy = ball.y - (right.y + (playerHeight/2));
+            magnitude = (ball.vx * ball.vx + ball.vy * ball.vy);
+            ball.vx *= -ball.vx / magnitude;
+            ball.vy *= ball.vy / magnitude;
+            if (ball.y < (right.y + (playerHeight/2))) {
+                ball.vy *= -1;
+            }
         }
     }
 
     bool outl = ball.x <= 2;
     bool outr = ball.x >= 125;
+    
     if (outl || outr) {
-        ball.x = 64;
-        ball.y = 16;
-        ball.vx = 0.7;
-        ball.vy = 0.7;
+        ball.x = 64, ball.y = 16;
+        ball.vx = 0.7, ball.vy = 0.7;
         if (outl) {right.score++;} else {left.score++;}
-    }
-    /*
-    char winner[3] = (right.score > left.score) ? "rrr" : "lll";
-    int i;
-    for (i = 0; i < 10; i++) {
-        if (highscores[i].name == winner) {
-            highscores[i].score++;
-            break;
+
+        bool is_pve = false;
+        if (is_pve) {
+            char *winner = (right.score > left.score) ? "rrr" : "lll";
+            int i;
+            for (i = 0; i < 10; i++) {
+                if (highscores[i].name == winner) {
+                    highscores[i].score++;
+                    break;
+                }
+            }
+            qsort(highscores, 10, sizeof(Highscore), cmpfunc);
         }
     }
-    qsort(highscores, 10, sizeof(Highscore), cmpfunc);
-    */
 }
 
 void bot_movement() {
@@ -280,13 +294,13 @@ int main(void) {
         if (menu) {
             menu_update(selected, menu);
         } else {
-            //ball movement ???
             ball.y += ball.vy;
             ball.x += ball.vx;
+            ball_collision(); //studsar/vinn
+            
             if (!pvp) { bot_movement(); } //om man spelar mot en bot
             update_paddle(widthMargin,left.y);
             update_paddle(128-widthMargin,right.y);
-            ball_collision(); //studsar/vinn
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             if (right.score == 10 || left.score == 10) {
                 left.score = 0;
@@ -307,7 +321,7 @@ int main(void) {
         if (menu) {
             delay = 10000;
         } else {
-            delay = 200000;
+            delay = 100000;
         }
         for(delay; delay > 0; delay--) {}
     }
