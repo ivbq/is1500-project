@@ -4,6 +4,7 @@
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "game.h"  /* Declatations for these labs */
 #include <math.h>
+#include <errno.h>
 
 #define EEPROM_ADDR 0x50 // Address of the EEPROM
 
@@ -289,8 +290,12 @@ int main(void) {
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             ball_collision(); //studsar/vinn
             if (right.score == 10 || left.score == 10) {
+<<<<<<< HEAD
                 /*
                 char[3] winner = (right.score > left.score) ? "rrr" : "lll";
+=======
+                char[] winner = (right.score > left.score) ? "rrr" : "lll";
+>>>>>>> 878909b9687d37ae582caa1f16075532fed71dfe
                 int i;
                 for (i = 0; i < 10; i++) {
                     if (highscores[i].name == winner) {
