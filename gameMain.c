@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <pic32mx.h>  /* Declarations of system-specific addresses etc */
 #include "game.h"  /* Declatations for these labs */
-#include <math.h>
-#include <errno.h>
 
 #define EEPROM_ADDR 0x50 // Address of the EEPROM
 
