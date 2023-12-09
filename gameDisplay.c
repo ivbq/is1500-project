@@ -268,7 +268,7 @@ uint8_t spi_send_recv(uint8_t data) {
 }
 
 void display_init(void) {
-        DISPLAY_CHANGE_TO_COMMAND_MODE;
+    DISPLAY_CHANGE_TO_COMMAND_MODE;
 	quicksleep(10);
 	DISPLAY_ACTIVATE_VDD;
 	quicksleep(1000000);
@@ -322,7 +322,6 @@ void clear_screen() {
     }
 }
 
-
 void menu_update(uint8_t selected, uint8_t menu) {
     uint8_t i;
     uint8_t j;
@@ -333,12 +332,6 @@ void menu_update(uint8_t selected, uint8_t menu) {
         }
     }
     if (menu == 1) { //menu 1 main 
-        for (i = 0; i < 8; i++) { //test
-            screen[20 + i][3] |= font[((int)'P')*8 + i];
-            screen[28 + i][3] |= font[((int)'O')*8 + i];
-            screen[36 + i][3] |= font[((int)'N')*8 + i];
-            screen[44 + i][3] |= font[((int)'G')*8 + i];
-        }
         for (i = 0; i < 3; i++) {
             screen[57 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
             screen[61 + i][1] |= text[10][i]; //PvBTEAYHRDLC //L
@@ -352,9 +345,6 @@ void menu_update(uint8_t selected, uint8_t menu) {
             screen[71 + i][2] |= text[4][i]; //PvBTEAYHRDLC //E
         }
 
-
-
-
     } else if (menu == 2) { //menu 2 play menu
         for (i = 0; i < 3; i++) {
             screen[59 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
@@ -365,8 +355,6 @@ void menu_update(uint8_t selected, uint8_t menu) {
             screen[63 + i][2] |= number[0][i]; //PvBTEAYHRDLC //O
             screen[67 + i][2] |= text[3][i]; //PvBTEAYHRDLC //T
         }
-
-
     } else if (menu == 3) { //menu 3 bot diff menu
         for (i = 0; i < 3; i++) {
             screen[57 + i][1] |= text[4][i]; //PvBTEAYHRDLC //E
@@ -380,10 +368,20 @@ void menu_update(uint8_t selected, uint8_t menu) {
             screen[69 + i][2] |= text[9][i]; //PvBTEAYHRDLC //D
         }
 
-
-
-    } else { //menu 4 score
-
+    } else if (menu == 4) { //menu 4 name select
+        for (i = 0; i < 8; i++) { //test
+            screen[54 + i][0] |= font[((int)'A')*8 + i];
+            screen[60 + i][0] |= font[((int)'B')*8 + i];
+            screen[66 + i][0] |= font[((int)'C')*8 + i];
+        }
+    } else { // menu 5 scoreboard
+        for (i = 0; i < 8; i++) { //test
+            screen[48 + i][0] |= font[((int)'S')*8 + i];
+            screen[54 + i][0] |= font[((int)'C')*8 + i];
+            screen[60 + i][0] |= font[((int)'O')*8 + i];
+            screen[66 + i][0] |= font[((int)'R')*8 + i];
+            screen[72 + i][0] |= font[((int)'E')*8 + i];
+        }
     }
     if (menu != 4) { //select
         if (selected == 0) { //första alternativet

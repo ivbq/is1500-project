@@ -229,7 +229,7 @@ int main(void) {
                         if (selected == 0) { //play
                             menu = 2;
                         } else { //score
-                            menu = 4;
+                            menu = 5;
                         }
                     } else if (menu == 2){ //menu 2
                         if (selected == 0) { //pvp
@@ -241,12 +241,14 @@ int main(void) {
                     } else if (menu == 3){ //menu 3
                         if (selected == 0) { //easy bot
                             bot.diff = 0;
-                        } else { //hard bor
+                        } else { //hard bot
                             bot.diff = 1;
                         }
                         pvp = 0;
+                        menu = 4;
+                    } else if (menu == 4) { // Name select
                         menu = 0;
-                    } else { //menu 4 score
+                    } else { //menu 5 score
                     // Add logic to handle highscores
                         menu = 1;
                         selected = 0;
