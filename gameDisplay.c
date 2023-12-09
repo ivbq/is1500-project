@@ -327,6 +327,20 @@ void clear_screen() {
     }
 }
 
+void update_name(char *name, int selected_char) {
+    int i;
+    for (i = 0; i < 4; i++) {
+        screen[56 + 8 * selected_char + i][1] |= arrows[0][i];
+        screen[56 + 8 * selected_char + i][3] |= arrows[1][i];
+    }
+
+    for (i = 0; i < 8; i++) { 
+        screen[54 + i][2] |= font[((int)name[0])*8 + i];
+        screen[60 + i][2] |= font[((int)name[1])*8 + i];
+        screen[66 + i][2] |= font[((int)name[2])*8 + i];
+    }
+}
+
 void menu_update(uint8_t selected, uint8_t menu) {
     uint8_t i;
     uint8_t j;
@@ -377,16 +391,7 @@ void menu_update(uint8_t selected, uint8_t menu) {
         }
 
     } else if (menu == 4) { //menu 4 name select
-        for (i = 0; i < 4; i++) {
-            screen[56 + i][1] |= arrows[0][i];
-            screen[56 + i][3] |= arrows[1][i];
-        }
-
-        for (i = 0; i < 8; i++) { 
-            screen[54 + i][2] |= font[((int)'A')*8 + i];
-            screen[60 + i][2] |= font[((int)'B')*8 + i];
-            screen[66 + i][2] |= font[((int)'C')*8 + i];
-        }
+        update_name("ABC", 0);
     } else { // menu 5 scoreboard
         for (i = 0; i < 8; i++) { //test
             screen[48 + i][0] |= font[((int)'S')*8 + i];
