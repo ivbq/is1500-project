@@ -185,6 +185,11 @@ uint8_t text[12][3] = { //PvBTEAYHRDLC
     {0b01110000, 0b10001000, 0b10001000} //C
     };
 
+uint8_t arrows[2][4] = {
+    {0b0110, 0b0001, 0b0001, 0b0110}, // Up
+    {0b0110, 0b1000, 0b1000, 0b0110}  // Down
+};
+
 uint8_t pong[4][4] = { //PONG
     {0b11111000, 0b00101000, 0b00101000, 0b00010000}, //P
     {0b01110000, 0b10001000, 0b10001000, 0b01110000}, //O
@@ -326,11 +331,14 @@ void menu_update(uint8_t selected, uint8_t menu) {
     uint8_t i;
     uint8_t j;
 
-    for (i = 0; i < 4; i++) {
-        for (j = 0; j < 4; j++) {
-            screen[55 + i*5 + j][0] |= pong[i][j];
+    if (menu == 1 || menu == 2 || menu == 3) {
+        for (i = 0; i < 4; i++) {
+            for (j = 0; j < 4; j++) {
+                screen[55 + i*5 + j][0] |= pong[i][j];
+            }
         }
     }
+
     if (menu == 1) { //menu 1 main 
         for (i = 0; i < 3; i++) {
             screen[57 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
@@ -369,10 +377,15 @@ void menu_update(uint8_t selected, uint8_t menu) {
         }
 
     } else if (menu == 4) { //menu 4 name select
-        for (i = 0; i < 8; i++) { //test
-            screen[54 + i][0] |= font[((int)'A')*8 + i];
-            screen[60 + i][0] |= font[((int)'B')*8 + i];
-            screen[66 + i][0] |= font[((int)'C')*8 + i];
+        for (i = 0; i < 4; i++) {
+            screen[56 + i][1] |= arrows[0][i];
+            screen[56 + i][3] |= arrows[1][i];
+        }
+
+        for (i = 0; i < 8; i++) { 
+            screen[54 + i][2] |= font[((int)'A')*8 + i];
+            screen[60 + i][2] |= font[((int)'B')*8 + i];
+            screen[66 + i][2] |= font[((int)'C')*8 + i];
         }
     } else { // menu 5 scoreboard
         for (i = 0; i < 8; i++) { //test
