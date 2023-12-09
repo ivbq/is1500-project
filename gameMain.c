@@ -6,10 +6,8 @@
 #define EEPROM_ADDR 0x50 // Address of the EEPROM
 
 /*
- * TODO:    Ball movement
- *          ball collision (även y-led)
+ * TODO:    
  *          highscore
- *          vinn anouncement, meny eller separat sida?
 */
 
 struct ball ball;
@@ -94,26 +92,16 @@ void ball_collision() { //fixa studs på y ???
         }
     }
 
+    // Check if player has scored goal
     bool outl = ball.x <= 2;
     bool outr = ball.x >= 125;
-    
     if (outl || outr) {
+        // Reset ball position
         ball.x = 64, ball.y = 16;
         ball.vx = 0.7, ball.vy = 0.7;
-        if (outl) {right.score++;} else {left.score++;}
 
-        bool is_pve = false;
-        if (is_pve) {
-            char *winner = (right.score > left.score) ? "rrr" : "lll";
-            int i;
-            for (i = 0; i < 10; i++) {
-                if (highscores[i].name == winner) {
-                    highscores[i].score++;
-                    break;
-                }
-            }
-            qsort(highscores, 10, sizeof(Highscore), cmpfunc);
-        }
+        // Add to in-game score counter
+        if (outl) {right.score++;} else {left.score++;}
     }
 }
 
@@ -299,7 +287,20 @@ int main(void) {
             update_paddle(widthMargin,left.y);
             update_paddle(128-widthMargin,right.y);
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
+            
             if (right.score == 10 || left.score == 10) {
+                if (!pvp) {
+                    char *winner = (right.score > left.score) ? "rrr" : "lll";
+                    int i;
+                    for (i = 0; i < 10; i++) {
+                        if (highscores[i].name == winner) {
+                            highscores[i].score++;
+                            break;
+                        }
+                    }
+                    qsort(highscores, 10, sizeof(Highscore), cmpfunc);
+                }
+
                 left.score = 0;
                 right.score = 0;
                 menu = 1;
