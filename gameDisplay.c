@@ -195,8 +195,8 @@ uint8_t text[12][3] = { //PvBTEAYHRDLC
     };
 
 uint8_t arrows[2][4] = {
-    {0b0110, 0b0001, 0b0001, 0b0110}, // Up
-    {0b0110, 0b1000, 0b1000, 0b0110}  // Down
+    {0b0110, 0b0011, 0b0011, 0b0110}, // Up
+    {0b0110, 0b1100, 0b1100, 0b0110}  // Down
 };
 
 uint8_t pong[4][4] = { //PONG
@@ -339,7 +339,7 @@ void clear_screen() {
 void update_name(char *name, int selected_char) {
     int i;
     for (i = 0; i < 4; i++) {
-        screen[56 + 6 * selected_char + i][1] |= arrows[0][i];
+        screen[56 + 6 * selected_char + i][1] |= (arrows[0][i] << 3);
         screen[56 + 6 * selected_char + i][3] |= arrows[1][i];
     }
 
@@ -405,9 +405,9 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *na
         } else {
             update_name("NOP", 0);
         }
-    } else { // menu 5 scoreboard
-        strcpy(highscores[0].name, "HAH");
-        highscores[0].score = 1;
+    } else if (menu == 5){ // menu 5 scoreboard
+        // strcpy(highscores[0].name, "HAH");
+        // highscores[0].score = 1;
         // strcpy(highscores[1].name, "LOL");
         // highscores[0].score = 700;
         // strcpy(highscores[2].name, "XDD");
@@ -416,17 +416,39 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *na
         // highscores[0].score = 500;
 
         int i, j, k;
-        char temp[10];
+        char temp[12];
         for (i = 0; i < 4; i++) {
-            strcpy(temp, itoaconv(i + 1));
+            strcpy(temp, itoaconv(i + 1 + (4*selected)));
             strcat(temp, " ");
-            strcat(temp, highscores[i].name);
+            strcat(temp, highscores[i + (4*selected)].name);
             strcat(temp, " ");
-            strcat(temp, itoaconv(highscores[i].score));
+            strcat(temp, itoaconv(highscores[i + (4*selected)].score));
+            strcat(temp, "  ");
             for (j = 0; j < 8; j++) { 
                 for (k = 0; k < 9; k++) {
                     screen[40 + 6*k + j][i] |= font[((int)(temp[k]))*8 + j];
                 }
+            }
+        }
+    } else if (menu == 6) {
+
+        int i, j;
+        char line1[10] = "CONGRATS!";
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 10; j++) {
+                screen[40 + i + (6*j)][1] |= font[((int)(line1[j]))*8 + i];
+            }
+        }
+        char line2[11] = "Left wins!";
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 11; j++) {
+                screen[40 + i + (6*j)][2] |= font[((int)(line2[j]))*8 + i];
+            }
+        }
+        char line3[12] = "Right wins!";
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 12; j++) {
+                screen[36 + i + (6*j)][3] |= font[((int)(line3[j]))*8 + i];
             }
         }
     }
