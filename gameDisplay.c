@@ -34,8 +34,10 @@ typedef struct highscore {
     uint16_t score;
 } Highscore;
 
+//contains what teh screen should show when updated
 uint8_t screen[128][4] = {0};
 
+//font taken from Labb3
 const uint8_t const font[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -167,6 +169,7 @@ const uint8_t const font[] = {
 	0, 120, 68, 66, 68, 120, 0, 0,
 };
 
+//small numbers for in-game
 uint8_t number[10][3] = {
     {0b11111000, 0b10001000, 0b11111000}, //0
     {0b10001000, 0b11111000, 0b10000000}, //1
@@ -179,6 +182,7 @@ uint8_t number[10][3] = {
     {0b11111000, 0b10101000, 0b11111000}, //8
     {0b10111000, 0b10101000, 0b11111000}}; //9
 
+//small letters for menus
 uint8_t text[12][3] = { //PvBTEAYHRDLC
     {0b11111000, 0b00101000, 0b00010000}, //P
     {0b01100000, 0b10000000, 0b01100000}, //v
@@ -194,12 +198,14 @@ uint8_t text[12][3] = { //PvBTEAYHRDLC
     {0b01110000, 0b10001000, 0b10001000} //C
     };
 
+//arrows for name select
 uint8_t arrows[2][4] = {
     {0b0110, 0b0011, 0b0011, 0b0110}, // Up
     {0b0110, 0b1100, 0b1100, 0b0110}  // Down
 };
 
-uint8_t pong[4][4] = { //PONG
+// small (but a bit bigger) letters for the title
+uint8_t pong[4][4] = {
     {0b11111000, 0b00101000, 0b00101000, 0b00010000}, //P
     {0b01110000, 0b10001000, 0b10001000, 0b01110000}, //O
     {0b11111000, 0b00010000, 0b00100000, 0b11111000}, //N
@@ -263,7 +269,7 @@ void tick( unsigned int * timep )
    about half of the digits shown by display_debug.
 */   
 
-/*
+/* we didnt use the debug tool :p
 void display_debug( volatile int * const addr )
 {
   display_string( 1, "Addr" );
@@ -310,7 +316,7 @@ void display_init(void) {
 	
 	spi_send_recv(0xAF);
 }
-/*
+/* we didnt use display_string
 void display_string(int line, char *s) {
 	int i;
 	if(line < 0 || line >= 4)
@@ -326,49 +332,52 @@ void display_string(int line, char *s) {
 			textbuffer[line][i] = ' ';
 }
 */
+
+//for clearing the screen
 void clear_screen() {
-    uint8_t i;
-    uint8_t j;
+    uint8_t i, j;
     for (i = 0; i < 128; i++) {
         for (j = 0; j < 4; j++) {
-            screen[i][j] = 0;
+            screen[i][j] = 0; //set every pixel to 0 (off)
         }
     }
 }
 
+//displays the name in name select
 void update_name(char *name, int selected_char) {
     int i;
-    for (i = 0; i < 4; i++) {
-        screen[56 + 6 * selected_char + i][0] |= (arrows[0][i] << 3);
-        screen[56 + 6 * selected_char + i][2] |= arrows[1][i];
+    for (i = 0; i < 4; i++) { //display the arrows
+        screen[56 + 6 * selected_char + i][1] |= (arrows[0][i] << 3); //arrow above
+        screen[56 + 6 * selected_char + i][3] |= arrows[1][i]; //arrow below
     }
 
-    for (i = 0; i < 8; i++) { 
-        screen[54 + i][1] |= font[((int)name[0])*8 + i];
-        screen[60 + i][1] |= font[((int)name[1])*8 + i];
-        screen[66 + i][1] |= font[((int)name[2])*8 + i];
+    for (i = 0; i < 8; i++) { //display the letters
+        screen[54 + i][2] |= font[((int)name[0])*8 + i];
+        screen[60 + i][2] |= font[((int)name[1])*8 + i];
+        screen[66 + i][2] |= font[((int)name[2])*8 + i];
     }
 }
 
+//update the menu
 void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *name, uint8_t selected_char) {
-    uint8_t i;
-    uint8_t j;
+    uint8_t i, j;
 
-    if (menu == 1 || menu == 2 || menu == 3) {
+    if (menu == 1 || menu == 2 || menu == 3) { //if main menu, PvP/Bot menu or easy/hard menu
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
-                screen[55 + i*5 + j][0] |= pong[i][j];
+                screen[55 + i*5 + j][0] |= pong[i][j]; //display the title
             }
         }
     }
 
     if (menu == 1) { //menu 1 main 
         for (i = 0; i < 3; i++) {
+            //play
             screen[57 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
             screen[61 + i][1] |= text[10][i]; //PvBTEAYHRDLC //L
             screen[65 + i][1] |= text[5][i]; //PvBTEAYHRDLC //A
             screen[69 + i][1] |= text[6][i]; //PvBTEAYHRDLC //Y
-        
+            //score
             screen[55 + i][2] |= number[5][i]; //PvBTEAYHRDLC //S
             screen[59 + i][2] |= text[11][i]; //PvBTEAYHRDLC //C
             screen[63 + i][2] |= number[0][i]; //PvBTEAYHRDLC //O
@@ -376,23 +385,25 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *na
             screen[71 + i][2] |= text[4][i]; //PvBTEAYHRDLC //E
         }
 
-    } else if (menu == 2) { //menu 2 play menu
+    } else if (menu == 2) { //menu 2 Pvp/Bot menu
         for (i = 0; i < 3; i++) {
+            //PvP
             screen[59 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
             screen[63 + i][1] |= text[1][i]; //PvBTEAYHRDLC //v
             screen[67 + i][1] |= text[0][i]; //PvBTEAYHRDLC //P
-        
+            //Bot
             screen[59 + i][2] |= text[2][i]; //PvBTEAYHRDLC //B
             screen[63 + i][2] |= number[0][i]; //PvBTEAYHRDLC //O
             screen[67 + i][2] |= text[3][i]; //PvBTEAYHRDLC //T
         }
-    } else if (menu == 3) { //menu 3 bot diff menu
+    } else if (menu == 3) { //menu 3 bot difficulty menu
         for (i = 0; i < 3; i++) {
+            //easy
             screen[57 + i][1] |= text[4][i]; //PvBTEAYHRDLC //E
             screen[61 + i][1] |= text[5][i]; //PvBTEAYHRDLC //A
             screen[65 + i][1] |= number[5][i]; //PvBTEAYHRDLC //S
             screen[69 + i][1] |= text[6][i]; //PvBTEAYHRDLC //Y
-
+            //hard
             screen[57 + i][2] |= text[7][i]; //PvBTEAYHRDLC //H
             screen[61 + i][2] |= text[5][i]; //PvBTEAYHRDLC //A
             screen[65 + i][2] |= text[8][i]; //PvBTEAYHRDLC //R
@@ -400,53 +411,55 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *na
         }
 
     } else if (menu == 4) { //menu 4 name select
-        if (name) {
-            update_name(name, selected_char);
-        } else {
-            update_name("NOP", 0);
+        int i, j;
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 11; j++) {
+                screen[32 + i + 6*j][0] |= font[((int)"Enter name:"[j])*8 + i]; //display "Enter name:" at the top
+            }
         }
-    } else if (menu == 5){ // menu 5 scoreboard
-        // strcpy(highscores[0].name, "HAH");
-        // highscores[0].score = 1;
-        // strcpy(highscores[1].name, "LOL");
-        // highscores[0].score = 700;
-        // strcpy(highscores[2].name, "XDD");
-        // highscores[0].score = 600;
-        // strcpy(highscores[3].name, "WTF");
-        // highscores[0].score = 500;
+        update_name(name, selected_char); //display the selection of letters
 
+    } else if (menu == 5){ // menu 5 scoreboard 
         int i, j, k;
         char temp[12];
-        for (i = 0; i < 4; i++) {
-            strcpy(temp, itoaconv(i + 1 + (4*selected)));
+        for (i = 0; i < 4; i++) { //for every row
+            //selected is for the second page
+            strcpy(temp, itoaconv(i + 1 + (4*selected))); //add rownumber
             strcat(temp, " ");
-            strcat(temp, highscores[i + (4*selected)].name);
+            strcat(temp, highscores[i + (4*selected)].name); //add name
             strcat(temp, " ");
-            strcat(temp, itoaconv(highscores[i + (4*selected)].score));
+            strcat(temp, itoaconv(highscores[i + (4*selected)].score)); //add the score
             strcat(temp, "  ");
             for (j = 0; j < 8; j++) { 
                 for (k = 0; k < 9; k++) {
-                    screen[40 + 6*k + j][i] |= font[((int)(temp[k]))*8 + j];
+                    screen[40 + 6*k + j][i] |= font[((int)(temp[k]))*8 + j]; //display the string
                 }
             }
         }
-    } else if (menu == 6 || menu == 7) {
-
+    } else if (menu == 6 || menu == 7) { //if someone wins
         int i, j;
         char line[12] = "CONGRATS!  ";
         for (i = 0; i < 8; i++) {
             for (j = 0; j < 10; j++) {
-                screen[40 + i + (6*j)][0] |= font[((int)(line[j]))*8 + i];
+                screen[40 + i + (6*j)][0] |= font[((int)(line[j]))*8 + i]; //display "CONGRATS!" at the top
             }
         }
-        if (menu == 6) {
+        
+        char smile[4] = ":-)"; 
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 3; j++) {
+                screen[56 + i + 6*j][3] |= font[((int)smile[j])*8 + i]; //":-)" at the bottom
+            }
+        }
+
+        if (menu == 6) { //if left wins
             strcpy(line, "Left wins! ");
             for (i = 0; i < 8; i++) {
                 for (j = 0; j < 11; j++) {
                     screen[37 + i + (6*j)][1] |= font[((int)(line[j]))*8 + i];
                 }
             } 
-        } else {
+        } else { //if right wins
             strcpy(line, "Right wins!");
             for (i = 0; i < 8; i++) {
                 for (j = 0; j < 12; j++) {
@@ -456,20 +469,20 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *na
         }
     }
     if (menu == 1 || menu == 2 || menu == 3) { //select
-        if (selected == 0) { //första alternativet
-            for (i = 0; i < 28; i++) { //rad
+        if (selected == 0) { //first alternative
+            for (i = 0; i < 28; i++) { //horizontal lines
                 screen[50+i][1] |= 0b00000010;
                 screen[50+i][2] |= 0b00000010;
-            }  //column
+            }  //vertical lines
             screen[50][1] |= 0b11111110; 
             screen[50][2] |= 0b00000011;
             screen[50+28][1] |= 0b11111110;
             screen[50+28][2] |= 0b00000011;
-        } else { //andra alternativet
-            for (i = 0; i < 28; i++) { //rad
+        } else { //second alternative
+            for (i = 0; i < 28; i++) { //horizontal lines
                 screen[50+i][2] |= 0b00000010;
                 screen[50+i][3] |= 0b00000010;
-            }  //column
+            }  //vertical lines
             screen[50][2] |= 0b11111110;
             screen[50][3] |= 0b00000011;
             screen[50+28][2] |= 0b11111110;
@@ -478,12 +491,12 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *na
     }
 }
 
-
-void update_ball(uint8_t bx, uint8_t by) {
-    uint8_t j;
-    uint8_t i;
-    uint8_t y = by -1;
-    uint8_t x = bx;
+//update the display of the ball
+void update_ball(uint8_t x, uint8_t y) {
+    uint8_t j, i;
+    //uint8_t y = by -1;
+    //uint8_t x = bx;
+    y--;
     
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 3; j++) {

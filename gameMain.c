@@ -56,13 +56,14 @@ void init_bot() {
     bot.diff = 1; //0 easy, 1 hard
 };
 
+// Comparison function for use in sorting the leaderboard
 int cmpfunc(const void *a, const void *b) {
     const Highscore *highscoreA = (const Highscore *)a;
     const Highscore *highscoreB = (const Highscore *)b;
-    return highscoreB->score - highscoreA->score ;
+    return highscoreB->score - highscoreA->score;
 }
 
-//checks if the ball collides with roof/floor or any player or if any player scored
+// Checks if the ball collides with roof/floor or any player or if any player scored
 void ball_collision() {
     if (ball.y <= heightMargin+1) { //if roof
         ball.y = heightMargin+1;
@@ -146,15 +147,15 @@ void ball_collision() {
 }
 
 void bot_movement() {
-    //if bot is hard mode
+    // If bot is hard mode
     if (bot.diff) {
-        //if the ball is nearly above the paddle
+        // If the ball is nearly above the paddle
         if (ball.y-3  < right.y) {
             right.y--; //move up
             if (right.y < heightMargin) {
                 right.y = heightMargin;
             }
-        } else if (ball.y+4 > right.y + playerHeight) { //if the ball is nearly below the paddle
+        } else if (ball.y+4 > right.y + playerHeight) { // If the ball is nearly below the paddle
             right.y++; //move down
             if (right.y > 31-playerHeight) {
                 right.y = 31-playerHeight;
@@ -245,27 +246,25 @@ int main(void) {
     //controls roughly how long each frame is
     int delay;
 
-    // Populate highscore table
+    // Initialize highscore table with empty entries
     int i;
-    for (i = 0; i < 8; i++) {
-        highscores[i] = (Highscore) {"   ", 0};
-    }
+    for (i = 0; i < 8; i++) { highscores[i] = (Highscore) {"   ", 0}; }
 
     while(1==1){
         //buttons
         uint8_t btns = getbtns();
         if(btns) {
             if ((btns & 0b1000) == 0b1000) { //if BT4
-                if (menu == 4) {
+                if (menu == 4) { //if choose name
                     if (name[selected_char] > 'A') {
                         name[selected_char]--;
                     } else {
                         name[selected_char] = 'Z';
                     }
                 }
-                else if (menu) {
+                else if (menu) { //if any other menu
                     selected = 0;
-                } else {
+                } else { //if in-game (move player 1 up)
                     left.y--;
                     if (left.y < heightMargin) {
                         left.y = heightMargin;
@@ -273,16 +272,16 @@ int main(void) {
                 }
             }
             if ((btns & 0b100) == 0b100) { //if BT3
-                if (menu == 4) {
+                if (menu == 4) { //if choose name
                     if (name[selected_char] < 'Z') {
                         name[selected_char]++;
                     } else {
                         name[selected_char] = 'A';
                     } 
                 }
-                else if (menu) {
+                else if (menu) { //if any other menu
                     selected = 1;
-                } else {
+                } else { //if in-game (move player 1 down)
                     left.y++;
                     if (left.y > 32-playerHeight - heightMargin) {
                         left.y = 32-playerHeight - heightMargin;
@@ -290,15 +289,15 @@ int main(void) {
                 }
             }
             if ((btns & 0b10) == 0b10) { //if BT2
-                if (menu) { //menyknapp
-                    if (menu == 1) {
+                if (menu) { //menu button (often continue button)
+                    if (menu == 1) { //main menu
                         if (selected == 0) { //play
                             menu = 2;
                         } else { //score
                             menu = 5;
                             selected = 0;
                         }
-                    } else if (menu == 2){ //menu 2
+                    } else if (menu == 2){ //menu 2 (PvP or BOT)
                         if (selected == 0) { //pvp
                             pvp = 1;
                             menu = 0;
@@ -306,36 +305,36 @@ int main(void) {
                             menu = 3;
                             selected = 0;
                         }
-                    } else if (menu == 3){ //menu 3
+                    } else if (menu == 3){ //menu 3 (bot difficulty)
                         if (selected == 0) { //easy bot
-                            bot.diff = 0;
+                            bot.diff = 0; //easy mode
                         } else { //hard bot
-                            bot.diff = 1;
+                            bot.diff = 1; //hard mode
                         }
-                        pvp = 0;
-                        menu = 4;
+                        pvp = 0; //not pvp
+                        menu = 4; //choose name
                         selected = 0;
                     } else if (menu == 4) { // Name select
-                        if (selected_char < 2) {
+                        if (selected_char < 2) { // which of the 3 characters is selected
                             selected_char++;
                         } else {
-                            right.y = 5; //för annars missar den bollen
-                            menu = 0;
                             selected_char = 0;
+                            right.y = 5; //change bot position so that you dont immidiatly win
+                            menu = 0;
                         }
                     } else if (menu == 5) { //menu 5 score
-                        menu = 1;
+                        menu = 1; //back to main menu
                         selected = 0;
                     } else if (menu == 6 || menu == 7) { //win screen
-                        strcpy(name, "AAA");
-                        menu = 1;
+                        strcpy(name, "AAA"); //reset name for next time
+                        menu = 1; //back to main menu
                         selected = 0;
                     } else { //default
                         menu = 1;
                         selected = 0;
                     }
 
-                } else { //movement knapp
+                } else { //if not menu, move player 2 down
                     if (pvp) {
                         right.y++;
                         if (right.y > 31-playerHeight) {
@@ -348,9 +347,9 @@ int main(void) {
 
             if ((btns & 0b1) == 0b1) { //if BT1
                 if (menu) {
-                    menu = 1;
+                    menu = 1; //to main menu
                 }
-                else if (pvp && !menu) {
+                else if (pvp && !menu) { //if not in menu, move player 2 up
                     right.y--;
                     if (right.y < heightMargin) {
                         right.y = heightMargin;
@@ -360,40 +359,45 @@ int main(void) {
         }
 
         clear_screen();
+        //if menu, display menu
         if (menu) {
             menu_update(selected, menu, highscores, name, selected_char);
-        } else {
+        } else { //if not menu, then in-game
+            //update ball position
             ball.y += ball.vy;
             ball.x += ball.vx;
-            ball_collision(); //studsar/vinn
+            ball_collision(); //check if bouncy or score
             
-            if (!pvp) { bot_movement(); } //om man spelar mot en bot
+            if (!pvp) { bot_movement(); } //if not pvp, move bot/"player 2"
 
+            //update what the screen should show
             update_paddle(widthMargin,left.y);
             update_paddle(128-widthMargin,right.y);
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             
+            //if someone have won
             if (left.score == 1 || right.score == 1) {
-                if (left.score > right.score) {
-                    if (!pvp) {
+                if (left.score > right.score) { //if left won
+                    if (!pvp) { //if versus a bot
                         int i;
                         for (i = 0; i < 8; i++) {
-                            if (highscores[i].score == 0) {
-                                strcpy(highscores[i].name, name);
+                            if (highscores[i].score == 0) { //if there is not an already existing score
+                                strcpy(highscores[i].name, name); //make that spot the new players spot for high score
                                 highscores[i].score = 1;
                                 break;
-                            } else if (!strcmp(highscores[i].name, name)) {
+                            } else if (!strcmp(highscores[i].name, name)) { //check if the name already have a highscore
                                 highscores[i].score++;
                                 break;
                             }
                         }
                     }
-                    qsort(highscores, 8, sizeof(Highscore), cmpfunc);
-                    menu = 6;
+                    qsort(highscores, 8, sizeof(Highscore), cmpfunc); //sort highscore list
+                    menu = 6; //move to "left wins" screen
                 } else {
-                    menu = 7;
+                    menu = 7; //move to "right wins" screen
                 }
-
+                
+                //reset in-game variables
                 left.score = 0;
                 right.score = 0;
                 left.y = 10;
@@ -402,21 +406,22 @@ int main(void) {
                 ball.y = 16;
                 ball.vx = 0.7;
                 ball.vy = 0.7;
-            } else {
-                update_score(left.score, right.score);
+            } else { // if noone has won yet
+                update_score(left.score, right.score); //update the score shown in-game
             }
         }
+        //update the screen
         display_update();
 
-        if ((btns & 0b10) == 0b10 && menu) {
+        if ((btns & 0b10) == 0b10 && menu) { //if continue button (needs a bit of delay)
             delay = 1500000;
-        } else if (menu == 4 && btns) {
+        } else if (menu == 4 && btns) { //name select
             delay = 800000;
-        } else if (menu && btns) {
+        } else if (menu && btns) { //default if menu
             delay = 200000;
-        } else if (menu == 0){
+        } else if (menu == 0){ //if in-game
             delay = 100000;
         }
-        for(delay; delay > 0; delay--) {}
+        for(delay; delay > 0; delay--) {} //runs and makes a delay
     }
 }
