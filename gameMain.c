@@ -8,7 +8,8 @@
 /*
  * TODO:    
  *      highscore
- *      
+ *      win-screen
+ *      fix game.h
 */
 
 // Only 3 highscores are visible at a time, though 10 are kept in memory
@@ -17,15 +18,15 @@
 // 3 is a separator
 // 4-8 lists total points scored
 typedef struct highscore {
-    char name[3];
+    char name[4];
     uint16_t score;
 } Highscore;
 
 Highscore highscores[10];
-int i;
-for (i = 0; i < 10; i++) {
-    highscores[i] = (Highscore) {"TMP", 0};
-}
+// int i;
+// for (i = 0; i < 10; i++) {
+//     highscores[i] = (Highscore) {"TMP", 0};
+// }
 
 struct ball ball;
 void init_ball() {
@@ -227,10 +228,16 @@ int main(void) {
     init_bot();
     int delay;
     uint8_t pvp = 0;
-    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 name select, 5 score, 6 vinnmeny???
+    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 name select, 5 score, 6 vinnmeny
     uint8_t selected = 0; //selected button i meny
-    char name[] = "AAA";
+    char name[4] = "AAA";
     uint8_t selected_char = 0;
+
+    // Populate highscore table
+    int i;
+    for (i = 0; i < 10; i++) {
+        highscores[i] = (Highscore) {"   ", 0};
+    }
 
     while(1==1){
         //buttons
@@ -278,7 +285,6 @@ int main(void) {
                         } else { //score
                             menu = 5;
                             selected = 0;
-                            // update_scoreboard(highscores);
                         }
                     } else if (menu == 2){ //menu 2
                         if (selected == 0) { //pvp
@@ -296,13 +302,20 @@ int main(void) {
                         }
                         pvp = 0;
                         menu = 4;
+                        selected = 0;
                     } else if (menu == 4) { // Name select
                         if (selected_char < 2) {
                             selected_char++;
                         } else {
                             menu = 0;
+                            selected_char = 0;
                         }
-                    } else { //menu 5 score
+                    } else if (menu == 5) { //menu 5 score
+                        menu = 1;
+                    } else if (menu == 6) { //win screen
+                        strcpy(name, "AAA");
+                        menu = 1;
+                    } else { //default
                         menu = 1;
                     }
 
@@ -339,30 +352,30 @@ int main(void) {
             ball_collision(); //studsar/vinn
             
             if (!pvp) { bot_movement(); } //om man spelar mot en bot
+
             update_paddle(widthMargin,left.y);
             update_paddle(128-widthMargin,right.y);
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             
-            if (right.score == 10 || left.score == 10) {
-                char player_won = left.score > right.score;
-                if (!pvp && player_won) {
+            if (left.score == 1 || right.score == 1) {
+                if (!pvp && left.score > right.score) {
                     int i;
                     for (i = 0; i < 10; i++) {
-                        if (highscores[i].name == "") {
+                        if (highscores[i].score == 0) {
                             strcpy(highscores[i].name, name);
                             highscores[i].score = 1;
                             break;
-                        } else if (highscores[i].name == name) {
+                        } else if (strcmp(highscores[i].name, name)) {
                             highscores[i].score++;
                             break;
                         }
                     }
-                    qsort(highscores, 10, sizeof(Highscore), cmpfunc);
+                    // qsort(highscores, 10, sizeof(Highscore), cmpfunc);
                 }
 
                 left.score = 0;
                 right.score = 0;
-                menu = 1;
+                menu = 6;
             } else {
                 update_score(left.score, right.score);
             }
