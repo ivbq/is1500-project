@@ -7,10 +7,7 @@
 
 /*
  * TODO:    
- *      highscore???
- *      fix game.h
  *      readme.txt
- *      comments
 */
 
 // Only 3 highscores are visible at a time, though 10 are kept in memory

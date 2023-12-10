@@ -494,47 +494,48 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *na
 //update the display of the ball
 void update_ball(uint8_t x, uint8_t y) {
     uint8_t j, i;
-    //uint8_t y = by -1;
-    //uint8_t x = bx;
-    y--;
+    y--; //shift the position from y +/- 1 to y/y+2 
     
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++) { //for every "screen-row"
         for (j = 0; j < 3; j++) {
-            if (y%8 <= 5) {
+            if (y%8 <= 5) { //if not between "screen-rows"
                 screen[x+j-1][y/8] |= 0b111 << y%8;
-            } else {
+            } else { //if between "screen-rows"
                 int combined = 0b111 << y%8;
-                screen[x+j-1][y/8] |= (uint8_t)(combined & 0xff);
-                screen[x+j-1][y/8 + 1] |= (uint8_t)((combined & 0xff00) >> 8);
+                screen[x+j-1][y/8] |= (uint8_t)(combined & 0xff); //display the part of ball that is on that part of the screen
+                screen[x+j-1][y/8 + 1] |= (uint8_t)((combined & 0xff00) >> 8); //display the other part on the the other part of the screen
             }
         }
     }
 }
 
+//update the display of the paddle
 void update_paddle(uint8_t x, uint8_t y) {
     uint8_t i, j, k;
-    for (j = 0; j < 2; j++) {
-        uint32_t combined = 0b1111111111 << y;
+    for (j = 0; j < 2; j++) { //2 wide
+        uint32_t combined = 0b1111111111 << y; //how much to move in y-direction
 
-        for (i = 0; i < 4; i++) {
-            screen[x-j][i] |= (uint8_t)(combined & 0xff);
-            combined = combined >> 8;
+        for (i = 0; i < 4; i++) { //show on all "screen-rows"
+            screen[x-j][i] |= (uint8_t)(combined & 0xff); //show the highest part of the paddle (nothing if the paddle isnt there)
+            combined = combined >> 8; //move paddle before moving to the next row
         }
     }
 }
 
+//show the score in-game
 void update_score(uint8_t left, uint8_t right){
     uint8_t i;
-    for(i = 0; i < 128; i++) {
+    for(i = 0; i < 128; i++) { //show the roof/floor lines
         screen[i][0] |= 0x1;
         screen[i][3] |= 0x80;
     }
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < 3; i++) { //show each number
         screen[55 + i][0] |= number[left][i];
         screen[68 + i][0] |= number[right][i];
     }
 }
 
+//update the display based on the screen variable (taken from labb 3 and modified)
 void display_update(void) {
     uint8_t i, j, k;
 	for(i = 0; i < 4; i++) {

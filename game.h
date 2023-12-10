@@ -6,8 +6,6 @@ void display_init(void);
 void display_string(int line, char *s);
 void display_update(void);
 uint8_t spi_send_recv(uint8_t data);
-
-//gameDisplay.c??
 char * itoaconv( int num );
 void labwork(void);
 void quicksleep(int cyc);
@@ -16,10 +14,8 @@ void tick( unsigned int * timep );
 /* Declare bitmap array containing font */
 extern const uint8_t const font[128*8];
 
-//??
 extern char textbuffer[4][16];
 
-//??
 /* Declare functions written by students.
    Note: Since we declare these functions here,
    students must define their functions with the exact types
