@@ -402,10 +402,11 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores) {
     } else if (menu == 4) { //menu 4 name select
         update_name("PLS", 0);
     } else { // menu 5 scoreboard
-        int i, j, k;
         strcpy(highscores[0].name, "1 HAH 010");
         strcpy(highscores[1].name, "2 LOL 008");
         strcpy(highscores[2].name, "3 XDD 005");
+        
+        int i, j, k;
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 8; j++) { 
                 for (k = 0; k < 10; k++) {
