@@ -5,11 +5,6 @@
 
 #define EEPROM_ADDR 0x50 // Address of the EEPROM
 
-/*
- * TODO:    
- *      readme.txt
-*/
-
 // Only 3 highscores are visible at a time, though 10 are kept in memory
 // Highscore format:
 // 0-2 reserved for 3-letter name ABC
