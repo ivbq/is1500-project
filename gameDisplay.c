@@ -31,7 +31,7 @@ static void num32asc( char * s, int );
 // 4-8 lists total points scored
 typedef struct highscore {
     char name[3];
-    int score;
+    uint16_t score;
 } Highscore;
 
 uint8_t screen[128][4] = {0};
@@ -402,15 +402,26 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores) {
     } else if (menu == 4) { //menu 4 name select
         update_name("PLS", 0);
     } else { // menu 5 scoreboard
-        strcpy(highscores[0].name, "1 HAH 010");
-        strcpy(highscores[1].name, "2 LOL 008");
-        strcpy(highscores[2].name, "3 XDD 005");
-        
+        strcpy(highscores[0].name, "HAH");
+        highscores[0].score = 800;
+        strcpy(highscores[1].name, "LOL");
+        highscores[0].score = 700;
+        strcpy(highscores[2].name, "XDD");
+        highscores[0].score = 600;
+        strcpy(highscores[3].name, "WTF");
+        highscores[0].score = 500;
+
         int i, j, k;
-        for (i = 0; i < 3; i++) {
+        char temp[10];
+        for (i = 0; i < 4; i++) {
+            strcpy(temp, itoaconv(i + 1));
+            strcat(temp, " ");
+            strcat(temp, highscores[i].name);
+            strcat(temp, " ");
+            strcat(temp, itoaconv(highscores[i].score));
             for (j = 0; j < 8; j++) { 
-                for (k = 0; k < 10; k++) {
-                    screen[40 + 6*k + j][i] |= font[((int)(highscores[i].name[k]))*8 + j];
+                for (k = 0; k < 9; k++) {
+                    screen[40 + 6*k + j][i] |= font[((int)(temp[k]))*8 + j];
                 }
             }
         }

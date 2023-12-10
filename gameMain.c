@@ -17,7 +17,7 @@
 // 4-8 lists total points scored
 typedef struct highscore {
     char name[3];
-    int score;
+    uint16_t score;
 } Highscore;
 
 struct ball ball;
