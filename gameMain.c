@@ -10,6 +10,16 @@
  *          highscore
 */
 
+// Only 3 highscores are visible at a time, though 10 are kept in memory
+// Highscore format:
+// 0-2 reserved for 3-letter name ABC
+// 3 is a separator
+// 4-8 lists total points scored
+typedef struct highscore {
+    char name[3];
+    int score;
+} Highscore;
+
 struct ball ball;
 void init_ball() {
     ball.x = 64;
@@ -36,16 +46,6 @@ void init_bot() {
     bot.dir = 1;
     bot.diff = 1; //0 easy, 1 hard
 };
-
-// Only 3 highscores are visible at a time, though 10 are kept in memory
-// Highscore format:
-// 0-2 reserved for 3-letter name ABC
-// 3 is a separator
-// 4-8 lists total points scored
-typedef struct highscore {
-    char name[3];
-    int score;
-} Highscore;
 
 Highscore highscores[10];
 
@@ -266,12 +266,13 @@ int main(void) {
                         pvp = 0;
                         menu = 4;
                     } else if (menu == 4) { // Name select
-                        update_name("AAA", selected_char);
                         if (selected_char <= 2) {
                             selected_char++;
                         } else {
                             menu = 0;
                         }
+                        update_name("TST", 0);
+                        display_update();
                     } else { //menu 5 score
                         menu = 1;
                     }
@@ -288,7 +289,10 @@ int main(void) {
 
 
             if ((btns & 0b1) == 0b1) { //if BT1
-                if (pvp && !menu) {
+                if (menu) {
+                    menu = 1;
+                }
+                else if (pvp && !menu) {
                     right.y--;
                     if (right.y < heightMargin) {
                         right.y = heightMargin;
@@ -296,8 +300,6 @@ int main(void) {
                 }
             }
         }
-
-
 
         clear_screen();
         if (menu) {
@@ -328,7 +330,6 @@ int main(void) {
                 left.score = 0;
                 right.score = 0;
                 menu = 1;
-                clear_screen();
             } else {
                 update_score(left.score, right.score);
             }
