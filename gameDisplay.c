@@ -517,7 +517,7 @@ void update_score(uint8_t left, uint8_t right){
         screen[i][3] |= 0x80;
     }
     for (i = 0; i < 3; i++) {
-        screen[55 + i][0] |= number[left][i]; //xor?
+        screen[55 + i][0] |= number[left][i];
         screen[68 + i][0] |= number[right][i];
     }
 }

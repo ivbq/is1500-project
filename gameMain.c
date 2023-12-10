@@ -9,6 +9,8 @@
  * TODO:    
  *      highscore???
  *      fix game.h
+ *      readme.txt
+ *      comments
 */
 
 // Only 3 highscores are visible at a time, though 10 are kept in memory
@@ -21,9 +23,10 @@ typedef struct highscore {
     uint16_t score;
 } Highscore;
 
-Highscore highscores[10];
+Highscore highscores[8];
 
 struct ball ball;
+//initialize ball
 void init_ball() {
     ball.x = 64;
     ball.y = 16;
@@ -33,6 +36,7 @@ void init_ball() {
 
 struct paddle left;
 struct paddle right;
+//initialize paddles
 void init_paddles() {
     right.y = 10;
     right.score = 0;
@@ -40,11 +44,13 @@ void init_paddles() {
     left.score = 0;
 };
 
-uint8_t playerHeight = 10;
-uint8_t widthMargin = 10;
-uint8_t heightMargin = 1;
+//game constants
+const uint8_t playerHeight = 10;
+const uint8_t widthMargin = 10;
+const uint8_t heightMargin = 1;
 
 struct bot bot;
+//initialize bot
 void init_bot() {
     bot.dir = 1;
     bot.diff = 1; //0 easy, 1 hard
@@ -53,15 +59,16 @@ void init_bot() {
 int cmpfunc(const void *a, const void *b) {
     const Highscore *highscoreA = (const Highscore *)a;
     const Highscore *highscoreB = (const Highscore *)b;
-    return highscoreA->score - highscoreB->score;
+    return highscoreB->score - highscoreA->score ;
 }
 
-void ball_collision() { //fixa studs på y ???
-    if (ball.y <= heightMargin+1) { //if tak
+//checks if the ball collides with roof/floor or any player or if any player scored
+void ball_collision() {
+    if (ball.y <= heightMargin+1) { //if roof
         ball.y = heightMargin+1;
         ball.vy *= -1;
     }
-    if(ball.y >= 31 - heightMargin -1) { //if golv
+    if(ball.y >= 31 - heightMargin -1) { //if floor
         ball.y = 31 - heightMargin -1;
         ball.vy *= -1;
     }
@@ -69,10 +76,11 @@ void ball_collision() { //fixa studs på y ???
     float magnitude = 1;
     float newBallVy = 0;
     float newBallVx = 0;
-    if (ball.x < widthMargin+2 && ball.x >= widthMargin) { //if vid vänstra spelare
-        if (left.y-1 < ball.y && left.y + playerHeight +1 > ball.y) {
+    if (ball.x < widthMargin+2 && ball.x >= widthMargin) { //if by the left player
+        if (left.y-1 < ball.y && left.y + playerHeight +1 > ball.y) { //if collide
             ball.x = widthMargin+2;
 
+            //new vector
             newBallVx = 2;
             newBallVy = ball.y - (left.y + (playerHeight/2));
             magnitude = (newBallVx*newBallVx + newBallVy*newBallVy);
@@ -81,10 +89,11 @@ void ball_collision() { //fixa studs på y ???
             if (ball.y < (left.y + (playerHeight/2))) {
                 newBallVy *= -1;
             }
-
+            //add new vectors
             ball.vx *= -1;
             ball.vx += newBallVx;
             ball.vy += newBallVy;
+            //normalize resulting vector
             magnitude = (ball.vx * ball.vx + ball.vy * ball.vy);
             ball.vx *= ball.vx / magnitude;
             if (ball.vy > 0) {
@@ -93,10 +102,11 @@ void ball_collision() { //fixa studs på y ???
                 ball.vy *= -ball.vy / magnitude;
             }
         }
-    } else if (ball.x > 127 - widthMargin -2 && ball.x <= 127 - widthMargin) { //if vid högra spelare
-        if (right.y-1 < ball.y && right.y + playerHeight +1 > ball.y) {
+    } else if (ball.x > 127 - widthMargin -2 && ball.x <= 127 - widthMargin) { //if by right player
+        if (right.y-1 < ball.y && right.y + playerHeight +1 > ball.y) { //if collide
             ball.x = 127 - widthMargin -2;
             
+            //new vector
             newBallVx = 2;
             newBallVy = ball.y - (right.y + (playerHeight/2));
             magnitude = (newBallVx*newBallVx + newBallVy*newBallVy);
@@ -106,15 +116,18 @@ void ball_collision() { //fixa studs på y ???
                 newBallVy *= -1;
             }
 
+            //add new vector
             ball.vx += newBallVx;
             ball.vy += newBallVy;
             magnitude = (ball.vx * ball.vx + ball.vy * ball.vy);
+            //normalize resulting vector
             ball.vx *= ball.vx / magnitude;
             if (ball.vy > 0) {
                 ball.vy *= ball.vy / magnitude;
             } else {
                 ball.vy *= -ball.vy / magnitude;
             }
+            //the ball needs to go left (ball.vx needs to be negative)
             ball.vx *= -1;
         }
     }
@@ -133,24 +146,26 @@ void ball_collision() { //fixa studs på y ???
 }
 
 void bot_movement() {
+    //if bot is hard mode
     if (bot.diff) {
+        //if the ball is nearly above the paddle
         if (ball.y-3  < right.y) {
-            right.y--;
+            right.y--; //move up
             if (right.y < heightMargin) {
                 right.y = heightMargin;
             }
-        } else if (ball.y+4 > right.y + playerHeight) {
-            right.y++;
+        } else if (ball.y+4 > right.y + playerHeight) { //if the ball is nearly below the paddle
+            right.y++; //move down
             if (right.y > 31-playerHeight) {
                 right.y = 31-playerHeight;
             }
         }
-    } else {
+    } else { //if bot is easy mode
         right.y += bot.dir;
-        if (right.y < heightMargin) {
+        if (right.y < heightMargin) { //if it hits the roof, change direction
             right.y = heightMargin;
             bot.dir *= -1;
-        } else if (right.y > 31-playerHeight - heightMargin) {
+        } else if (right.y > 31-playerHeight - heightMargin) { //if it hits the floor, change direction
             right.y = 31-playerHeight - heightMargin;
             bot.dir *= -1;
         }
@@ -217,20 +232,22 @@ int main(void) {
 	I2C1CONSET = 1 << 15; // ON = 1
 	temp = I2C1RCV; //Clear receive buffer
 	
+    //initialize everything
     display_init();
     init_ball();
     init_paddles();
     init_bot();
-    int delay;
     uint8_t pvp = 0;
     uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 name select, 5 score, 6 väntervinnmeny, 7 högervinnmeny
     uint8_t selected = 0; //selected button i meny
     char name[4] = "AAA";
     uint8_t selected_char = 0;
+    //controls roughly how long each frame is
+    int delay;
 
     // Populate highscore table
     int i;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 8; i++) {
         highscores[i] = (Highscore) {"   ", 0};
     }
 
@@ -310,7 +327,7 @@ int main(void) {
                         menu = 1;
                         selected = 0;
                     } else if (menu == 6 || menu == 7) { //win screen
-                        strcpy(name, "AAA"); //what???
+                        strcpy(name, "AAA");
                         menu = 1;
                         selected = 0;
                     } else { //default
@@ -360,18 +377,18 @@ int main(void) {
                 if (left.score > right.score) {
                     if (!pvp) {
                         int i;
-                        for (i = 0; i < 10; i++) {
+                        for (i = 0; i < 8; i++) {
                             if (highscores[i].score == 0) {
                                 strcpy(highscores[i].name, name);
                                 highscores[i].score = 1;
                                 break;
-                            } else if (strcmp(highscores[i].name, name)) {
+                            } else if (!strcmp(highscores[i].name, name)) {
                                 highscores[i].score++;
                                 break;
                             }
                         }
                     }
-                    // qsort(highscores, 10, sizeof(Highscore), cmpfunc);
+                    qsort(highscores, 8, sizeof(Highscore), cmpfunc);
                     menu = 6;
                 } else {
                     menu = 7;
