@@ -198,28 +198,46 @@ int main(void) {
     uint8_t pvp = 0;
     uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 score //5 vinnmeny???
     uint8_t selected = 0; //selected button i meny
+    char name[] = "AAA";
+    uint8_t selected_char = 0;
 
     while(1==1){
         //buttons
         uint8_t btns = getbtns();
         if(btns) {
-            if ((btns & 0b100) == 0b100) { //if BT3
-                if (menu) {
-                    selected = 1;
-                } else {
-                    left.y++;
-                    if (left.y > 32-playerHeight - heightMargin) {
-                        left.y = 32-playerHeight - heightMargin;
-                    }
-                }
-            }
             if ((btns & 0b1000) == 0b1000) { //if BT4
-                if (menu) {
+                if (menu == 4) {
+                    if (name[selected_char] >= 'A') {
+                        name[selected_char]--;
+                    } else {
+                        name[selected_char] = 'Z';
+                    }
+                    update_name(name, selected_char);
+                }
+                else if (menu) {
                     selected = 0;
                 } else {
                     left.y--;
                     if (left.y < heightMargin) {
                         left.y = heightMargin;
+                    }
+                }
+            }
+            if ((btns & 0b100) == 0b100) { //if BT3
+                if (menu == 4) {
+                    if (name[selected_char] <= 'Z') {
+                        name[selected_char]++;
+                    } else {
+                        name[selected_char] = 'A';
+                    } 
+                    update_name(name, selected_char);
+                }
+                else if (menu) {
+                    selected = 1;
+                } else {
+                    left.y++;
+                    if (left.y > 32-playerHeight - heightMargin) {
+                        left.y = 32-playerHeight - heightMargin;
                     }
                 }
             }
@@ -230,6 +248,7 @@ int main(void) {
                             menu = 2;
                         } else { //score
                             menu = 5;
+                            // update_scoreboard(highscores);
                         }
                     } else if (menu == 2){ //menu 2
                         if (selected == 0) { //pvp
@@ -247,11 +266,14 @@ int main(void) {
                         pvp = 0;
                         menu = 4;
                     } else if (menu == 4) { // Name select
-                        menu = 0;
+                        update_name("AAA", selected_char);
+                        if (selected_char <= 2) {
+                            selected_char++;
+                        } else {
+                            menu = 0;
+                        }
                     } else { //menu 5 score
-                    // Add logic to handle highscores
                         menu = 1;
-                        selected = 0;
                     }
 
                 } else { //movement knapp
@@ -279,7 +301,7 @@ int main(void) {
 
         clear_screen();
         if (menu) {
-            menu_update(selected, menu);
+            menu_update(selected, menu, highscores);
         } else {
             ball.y += ball.vy;
             ball.x += ball.vx;
@@ -291,11 +313,11 @@ int main(void) {
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             
             if (right.score == 10 || left.score == 10) {
-                if (!pvp) {
-                    char *winner = (right.score > left.score) ? "rrr" : "lll";
+                char player_won = left.score > right.score;
+                if (!pvp && player_won) {
                     int i;
                     for (i = 0; i < 10; i++) {
-                        if (highscores[i].name == winner) {
+                        if (highscores[i].name == name) {
                             highscores[i].score++;
                             break;
                         }

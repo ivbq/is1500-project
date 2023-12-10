@@ -23,9 +23,12 @@ static void num32asc( char * s, int );
 #define DISPLAY_TURN_OFF_VDD (PORTFSET = 0x40)
 #define DISPLAY_TURN_OFF_VBAT (PORTFSET = 0x20)
 
+typedef struct highscore {
+    char name[3];
+    int score;
+} Highscore;
 
 uint8_t screen[128][4] = {0};
-
 
 const uint8_t const font[] = {
 	0, 0, 0, 0, 0, 0, 0, 0,
@@ -330,8 +333,8 @@ void clear_screen() {
 void update_name(char *name, int selected_char) {
     int i;
     for (i = 0; i < 4; i++) {
-        screen[56 + 8 * selected_char + i][1] |= arrows[0][i];
-        screen[56 + 8 * selected_char + i][3] |= arrows[1][i];
+        screen[56 + 6 * selected_char + i][1] |= arrows[0][i];
+        screen[56 + 6 * selected_char + i][3] |= arrows[1][i];
     }
 
     for (i = 0; i < 8; i++) { 
@@ -341,7 +344,24 @@ void update_name(char *name, int selected_char) {
     }
 }
 
-void menu_update(uint8_t selected, uint8_t menu) {
+void update_scoreboard(Highscore *highscores) {
+    int i, j, k;
+    for (i = 0; i < 3; i++) {
+        char entry[10];
+        strcpy(entry, (char)i);
+        strcpy(entry, " ");
+        strcpy(entry, highscores[i].name);
+        strcpy(entry, " ");
+        strcpy(entry, highscores[i].score);
+        for (j = 0; j < 8; j++) { 
+            for (k = 0; k < 10; k++) {
+                screen[48 + 6*k + j][0] |= font[((int)entry[k])*8 + j];
+            }
+        }
+    }
+}
+
+void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores) {
     uint8_t i;
     uint8_t j;
 
@@ -390,16 +410,11 @@ void menu_update(uint8_t selected, uint8_t menu) {
             screen[69 + i][2] |= text[9][i]; //PvBTEAYHRDLC //D
         }
 
+    uint8_t has_set_name = 0;
     } else if (menu == 4) { //menu 4 name select
-        update_name("ABC", 0);
+        update_name("AAA", 1);
     } else { // menu 5 scoreboard
-        for (i = 0; i < 8; i++) { //test
-            screen[48 + i][0] |= font[((int)'S')*8 + i];
-            screen[54 + i][0] |= font[((int)'C')*8 + i];
-            screen[60 + i][0] |= font[((int)'O')*8 + i];
-            screen[66 + i][0] |= font[((int)'R')*8 + i];
-            screen[72 + i][0] |= font[((int)'E')*8 + i];
-        }
+        update_scoreboard(highscores);
     }
     if (menu != 4) { //select
         if (selected == 0) { //första alternativet
