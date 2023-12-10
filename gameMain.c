@@ -23,10 +23,6 @@ typedef struct highscore {
 } Highscore;
 
 Highscore highscores[10];
-// int i;
-// for (i = 0; i < 10; i++) {
-//     highscores[i] = (Highscore) {"TMP", 0};
-// }
 
 struct ball ball;
 void init_ball() {
