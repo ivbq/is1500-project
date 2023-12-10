@@ -339,14 +339,14 @@ void clear_screen() {
 void update_name(char *name, int selected_char) {
     int i;
     for (i = 0; i < 4; i++) {
-        screen[56 + 6 * selected_char + i][1] |= (arrows[0][i] << 3);
-        screen[56 + 6 * selected_char + i][3] |= arrows[1][i];
+        screen[56 + 6 * selected_char + i][0] |= (arrows[0][i] << 3);
+        screen[56 + 6 * selected_char + i][2] |= arrows[1][i];
     }
 
     for (i = 0; i < 8; i++) { 
-        screen[54 + i][2] |= font[((int)name[0])*8 + i];
-        screen[60 + i][2] |= font[((int)name[1])*8 + i];
-        screen[66 + i][2] |= font[((int)name[2])*8 + i];
+        screen[54 + i][1] |= font[((int)name[0])*8 + i];
+        screen[60 + i][1] |= font[((int)name[1])*8 + i];
+        screen[66 + i][1] |= font[((int)name[2])*8 + i];
     }
 }
 
@@ -430,25 +430,28 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *na
                 }
             }
         }
-    } else if (menu == 6) {
+    } else if (menu == 6 || menu == 7) {
 
         int i, j;
-        char line1[10] = "CONGRATS!";
+        char line[12] = "CONGRATS!  ";
         for (i = 0; i < 8; i++) {
             for (j = 0; j < 10; j++) {
-                screen[40 + i + (6*j)][1] |= font[((int)(line1[j]))*8 + i];
+                screen[40 + i + (6*j)][0] |= font[((int)(line[j]))*8 + i];
             }
         }
-        char line2[11] = "Left wins!";
-        for (i = 0; i < 8; i++) {
-            for (j = 0; j < 11; j++) {
-                screen[40 + i + (6*j)][2] |= font[((int)(line2[j]))*8 + i];
-            }
-        }
-        char line3[12] = "Right wins!";
-        for (i = 0; i < 8; i++) {
-            for (j = 0; j < 12; j++) {
-                screen[36 + i + (6*j)][3] |= font[((int)(line3[j]))*8 + i];
+        if (menu == 6) {
+            strcpy(line, "Left wins! ");
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 11; j++) {
+                    screen[37 + i + (6*j)][1] |= font[((int)(line[j]))*8 + i];
+                }
+            } 
+        } else {
+            strcpy(line, "Right wins!");
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 12; j++) {
+                    screen[34 + i + (6*j)][1] |= font[((int)(line[j]))*8 + i];
+                }
             }
         }
     }

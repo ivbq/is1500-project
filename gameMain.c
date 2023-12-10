@@ -7,8 +7,7 @@
 
 /*
  * TODO:    
- *      highscore
- *      win-screen
+ *      highscore???
  *      fix game.h
 */
 
@@ -224,7 +223,7 @@ int main(void) {
     init_bot();
     int delay;
     uint8_t pvp = 0;
-    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 name select, 5 score, 6 vinnmeny
+    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 name select, 5 score, 6 väntervinnmeny, 7 högervinnmeny
     uint8_t selected = 0; //selected button i meny
     char name[4] = "AAA";
     uint8_t selected_char = 0;
@@ -303,16 +302,20 @@ int main(void) {
                         if (selected_char < 2) {
                             selected_char++;
                         } else {
+                            right.y = 5; //för annars missar den bollen
                             menu = 0;
                             selected_char = 0;
                         }
                     } else if (menu == 5) { //menu 5 score
                         menu = 1;
-                    } else if (menu == 6) { //win screen
-                        strcpy(name, "AAA");
+                        selected = 0;
+                    } else if (menu == 6 || menu == 7) { //win screen
+                        strcpy(name, "AAA"); //what???
                         menu = 1;
+                        selected = 0;
                     } else { //default
                         menu = 1;
+                        selected = 0;
                     }
 
                 } else { //movement knapp
@@ -354,24 +357,34 @@ int main(void) {
             update_ball((uint8_t)ball.x, (uint8_t)ball.y);
             
             if (left.score == 1 || right.score == 1) {
-                if (!pvp && left.score > right.score) {
-                    int i;
-                    for (i = 0; i < 10; i++) {
-                        if (highscores[i].score == 0) {
-                            strcpy(highscores[i].name, name);
-                            highscores[i].score = 1;
-                            break;
-                        } else if (strcmp(highscores[i].name, name)) {
-                            highscores[i].score++;
-                            break;
+                if (left.score > right.score) {
+                    if (!pvp) {
+                        int i;
+                        for (i = 0; i < 10; i++) {
+                            if (highscores[i].score == 0) {
+                                strcpy(highscores[i].name, name);
+                                highscores[i].score = 1;
+                                break;
+                            } else if (strcmp(highscores[i].name, name)) {
+                                highscores[i].score++;
+                                break;
+                            }
                         }
                     }
                     // qsort(highscores, 10, sizeof(Highscore), cmpfunc);
+                    menu = 6;
+                } else {
+                    menu = 7;
                 }
 
                 left.score = 0;
                 right.score = 0;
-                menu = 6;
+                left.y = 10;
+                right.y = 10;
+                ball.x = 64;
+                ball.y = 16;
+                ball.vx = 0.7;
+                ball.vy = 0.7;
             } else {
                 update_score(left.score, right.score);
             }
