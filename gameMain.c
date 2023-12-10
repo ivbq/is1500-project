@@ -7,7 +7,9 @@
 
 /*
  * TODO:    
- *          highscore
+ *      highscore
+ *      copying
+ *      
 */
 
 // Only 3 highscores are visible at a time, though 10 are kept in memory
@@ -19,6 +21,12 @@ typedef struct highscore {
     char name[3];
     uint16_t score;
 } Highscore;
+
+Highscore highscores[10];
+// int i;
+// for (i = 0; i < 10; i++) {
+//     highscores[i] = (Highscore) {"TMP", 0};
+// }
 
 struct ball ball;
 void init_ball() {
@@ -47,8 +55,6 @@ void init_bot() {
     bot.diff = 1; //0 easy, 1 hard
 };
 
-Highscore highscores[10];
-
 int cmpfunc(const void *a, const void *b) {
     const Highscore *highscoreA = (const Highscore *)a;
     const Highscore *highscoreB = (const Highscore *)b;
@@ -66,29 +72,55 @@ void ball_collision() { //fixa studs på y ???
     }
 
     float magnitude = 1;
+    float newBallVy = 0;
+    float newBallVx = 0;
     if (ball.x < widthMargin+2 && ball.x >= widthMargin) { //if vid vänstra spelare
         if (left.y-1 < ball.y && left.y + playerHeight +1 > ball.y) {
             ball.x = widthMargin+2;
-            ball.vx = 2;
-            ball.vy = ball.y - (left.y + (playerHeight/2));
+
+            newBallVx = 2;
+            newBallVy = ball.y - (left.y + (playerHeight/2));
+            magnitude = (newBallVx*newBallVx + newBallVy*newBallVy);
+            newBallVx *= newBallVx / magnitude;
+            newBallVy *= newBallVy / magnitude;
+            if (ball.y < (left.y + (playerHeight/2))) {
+                newBallVy *= -1;
+            }
+
+            ball.vx *= -1;
+            ball.vx += newBallVx;
+            ball.vy += newBallVy;
             magnitude = (ball.vx * ball.vx + ball.vy * ball.vy);
             ball.vx *= ball.vx / magnitude;
-            ball.vy *= ball.vy / magnitude;
-            if (ball.y < (left.y + (playerHeight/2))) {
-                ball.vy *= -1;
+            if (ball.vy > 0) {
+                ball.vy *= ball.vy / magnitude;
+            } else {
+                ball.vy *= -ball.vy / magnitude;
             }
         }
     } else if (ball.x > 127 - widthMargin -2 && ball.x <= 127 - widthMargin) { //if vid högra spelare
         if (right.y-1 < ball.y && right.y + playerHeight +1 > ball.y) {
             ball.x = 127 - widthMargin -2;
-            ball.vx = 2;
-            ball.vy = ball.y - (right.y + (playerHeight/2));
-            magnitude = (ball.vx * ball.vx + ball.vy * ball.vy);
-            ball.vx *= -ball.vx / magnitude;
-            ball.vy *= ball.vy / magnitude;
+            
+            newBallVx = 2;
+            newBallVy = ball.y - (right.y + (playerHeight/2));
+            magnitude = (newBallVx*newBallVx + newBallVy*newBallVy);
+            newBallVx *= newBallVx / magnitude;
+            newBallVy *= newBallVy / magnitude;
             if (ball.y < (right.y + (playerHeight/2))) {
-                ball.vy *= -1;
+                newBallVy *= -1;
             }
+
+            ball.vx += newBallVx;
+            ball.vy += newBallVy;
+            magnitude = (ball.vx * ball.vx + ball.vy * ball.vy);
+            ball.vx *= ball.vx / magnitude;
+            if (ball.vy > 0) {
+                ball.vy *= ball.vy / magnitude;
+            } else {
+                ball.vy *= -ball.vy / magnitude;
+            }
+            ball.vx *= -1;
         }
     }
 
@@ -196,7 +228,7 @@ int main(void) {
     init_bot();
     int delay;
     uint8_t pvp = 0;
-    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 score //5 vinnmeny???
+    uint8_t menu = 1; //0 är in game, 1 är main meny, 2 är play meny, 3 är bot difficulty select, 4 name select, 5 score, 6 vinnmeny???
     uint8_t selected = 0; //selected button i meny
     char name[] = "AAA";
     uint8_t selected_char = 0;
@@ -207,12 +239,11 @@ int main(void) {
         if(btns) {
             if ((btns & 0b1000) == 0b1000) { //if BT4
                 if (menu == 4) {
-                    if (name[selected_char] >= 'A') {
+                    if (name[selected_char] > 'A') {
                         name[selected_char]--;
                     } else {
                         name[selected_char] = 'Z';
                     }
-                    update_name(name, selected_char);
                 }
                 else if (menu) {
                     selected = 0;
@@ -225,12 +256,11 @@ int main(void) {
             }
             if ((btns & 0b100) == 0b100) { //if BT3
                 if (menu == 4) {
-                    if (name[selected_char] <= 'Z') {
+                    if (name[selected_char] < 'Z') {
                         name[selected_char]++;
                     } else {
                         name[selected_char] = 'A';
                     } 
-                    update_name(name, selected_char);
                 }
                 else if (menu) {
                     selected = 1;
@@ -248,6 +278,7 @@ int main(void) {
                             menu = 2;
                         } else { //score
                             menu = 5;
+                            selected = 0;
                             // update_scoreboard(highscores);
                         }
                     } else if (menu == 2){ //menu 2
@@ -256,6 +287,7 @@ int main(void) {
                             menu = 0;
                         } else { //bot
                             menu = 3;
+                            selected = 0;
                         }
                     } else if (menu == 3){ //menu 3
                         if (selected == 0) { //easy bot
@@ -266,13 +298,11 @@ int main(void) {
                         pvp = 0;
                         menu = 4;
                     } else if (menu == 4) { // Name select
-                        if (selected_char <= 2) {
+                        if (selected_char < 2) {
                             selected_char++;
                         } else {
                             menu = 0;
                         }
-                        update_name("TST", 0);
-                        display_update();
                     } else { //menu 5 score
                         menu = 1;
                     }
@@ -303,7 +333,7 @@ int main(void) {
 
         clear_screen();
         if (menu) {
-            menu_update(selected, menu, highscores);
+            menu_update(selected, menu, highscores, name, selected_char);
         } else {
             ball.y += ball.vy;
             ball.x += ball.vx;
@@ -319,7 +349,11 @@ int main(void) {
                 if (!pvp && player_won) {
                     int i;
                     for (i = 0; i < 10; i++) {
-                        if (highscores[i].name == name) {
+                        if (highscores[i].name == "") {
+                            strcpy(highscores[i].name, name);
+                            highscores[i].score = 1;
+                            break;
+                        } else if (highscores[i].name == name) {
                             highscores[i].score++;
                             break;
                         }
@@ -337,13 +371,12 @@ int main(void) {
         display_update();
 
         if ((btns & 0b10) == 0b10 && menu) {
-            for(delay = 0; delay < 2000000; delay++) {}
-        }
-
-        
-        if (menu) {
-            delay = 10000;
-        } else {
+            delay = 1500000;
+        } else if (menu == 4 && btns) {
+            delay = 800000;
+        } else if (menu && btns) {
+            delay = 200000;
+        } else if (menu == 0){
             delay = 100000;
         }
         for(delay; delay > 0; delay--) {}

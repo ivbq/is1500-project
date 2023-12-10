@@ -350,7 +350,7 @@ void update_name(char *name, int selected_char) {
     }
 }
 
-void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores) {
+void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores, char *name, uint8_t selected_char) {
     uint8_t i;
     uint8_t j;
 
@@ -400,16 +400,20 @@ void menu_update(uint8_t selected, uint8_t menu, Highscore *highscores) {
         }
 
     } else if (menu == 4) { //menu 4 name select
-        update_name("PLS", 0);
+        if (name) {
+            update_name(name, selected_char);
+        } else {
+            update_name("NOP", 0);
+        }
     } else { // menu 5 scoreboard
         strcpy(highscores[0].name, "HAH");
-        highscores[0].score = 800;
-        strcpy(highscores[1].name, "LOL");
-        highscores[0].score = 700;
-        strcpy(highscores[2].name, "XDD");
-        highscores[0].score = 600;
-        strcpy(highscores[3].name, "WTF");
-        highscores[0].score = 500;
+        highscores[0].score = 1;
+        // strcpy(highscores[1].name, "LOL");
+        // highscores[0].score = 700;
+        // strcpy(highscores[2].name, "XDD");
+        // highscores[0].score = 600;
+        // strcpy(highscores[3].name, "WTF");
+        // highscores[0].score = 500;
 
         int i, j, k;
         char temp[10];
