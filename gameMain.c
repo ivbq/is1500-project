@@ -8,7 +8,6 @@
 /*
  * TODO:    
  *      highscore
- *      copying
  *      
 */
 
